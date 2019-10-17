@@ -2,7 +2,7 @@ package game.algorithms;
 
 public class Algorithm {
 	
-	// For n cases return a random n
+	//For n cases return a random n
 	public static int randUniform (int numberCases) {
 		double u = Math.random();
 		for (int i=1; i<=numberCases; i++)
