@@ -26,5 +26,9 @@ public class Algorithm {
 		if (u <= 0.7) return 1;
 		else return 2;
 	}
+	
+	public static double triangle () {
+		return Math.sqrt(25*Math.random())+7;
+	}
 
 }
