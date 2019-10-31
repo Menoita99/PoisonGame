@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.algorithms.DataVisualizer">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <MenuButton mnemonicParsing="false" prefHeight="29.0" prefWidth="76.0" text="Actions">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#openNewWindow" text="New" />
+                      <MenuItem mnemonicParsing="false" onAction="#addChart" text="Add" />
+                        <MenuItem mnemonicParsing="false" onAction="#removeChart" text="Remove" />
+                    </items>
+                  </MenuButton>
+                  <ScrollPane VBox.vgrow="NEVER">
+                     <content>
+                        <HBox fx:id="checkBoxPanel" spacing="3.0" />
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane VBox.vgrow="ALWAYS">
+                     <content>
+                        <HBox fx:id="chartPanel" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
