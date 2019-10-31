@@ -90,7 +90,7 @@ public class ManagerController extends Application {
 	 * The Platform Thread is here the User interface will be executed
 	 * all the GUI actions must be executed in this Thread (like swing)
 	 * 
-	 * You can use in controllers the Method Plataform.runLater(Runnable r ); when 
+	 * You can use inside controllers the Method Plataform.runLater(Runnable r ); when 
 	 * you need to execute an GUI action that is not called by Platform Thread
 	 */
 	@Override
@@ -132,8 +132,4 @@ public class ManagerController extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-
-	
-
 }
