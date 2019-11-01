@@ -16,10 +16,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
@@ -59,7 +61,7 @@ public class DataVisualizer extends Application{
 		yAxis.setForceZeroInRange(true);
 		
 		BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-		chart.setTitle(name);
+		chart.setTitle(chartId+" "+name);
 		
 		XYChart.Series<String, Number> dataSet = new XYChart.Series<String, Number>();
 		
@@ -162,7 +164,27 @@ public class DataVisualizer extends Application{
 	 */
 	@FXML
 	public void removeChart(ActionEvent event) {
-		System.out.println("To implement");//TODO
+		checkBoxPanel.getChildren();
+		List<Node> removeBox = new ArrayList<Node>();
+		List<Node> removeChart = new ArrayList<Node>();
+		
+		for (Node checkBox : checkBoxPanel.getChildren()) {
+			
+			if(((CheckBox)checkBox).isSelected()) {
+				
+				for(Node chart : chartPanel.getChildren()) {
+					
+					if(((Chart)chart).getTitle().equals(((CheckBox)checkBox).getText())) {
+						removeChart.add(chart);
+						removeBox.add(checkBox);
+					}
+					
+				}
+			}
+		}
+		
+		checkBoxPanel.getChildren().removeAll(removeBox);
+		chartPanel.getChildren().removeAll(removeChart);
 	}
 
 
