@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class DataVisualizerTest {
 
-	private static final int N_TEST = 10000;
+	private static final int N_TEST = 5000000;
 
 	public static void main(String[] args) {
 		
@@ -13,6 +13,29 @@ public class DataVisualizerTest {
 		
 		Map<String,Double> map = new HashMap<>();	
 		
+		for (int i = 0; i < arr.length; i++) 
+			arr[i] = Math.round(Algorithm.normal(25, Math.sqrt(5), 20, 30) * Math.pow(10, 1)) / Math.pow(10, 1) ;
+
+		DataVisualizer.writeData(arr, "normal");
+		
+		
+		/***
+		 * 
+		 * 
+
+		for (int i = 0; i < arr.length; i++) 
+			arr[i] = Math.round(Algorithm.triangle() * Math.pow(10, 1)) / Math.pow(10, 1) ;
+
+		DataVisualizer.writeData(arr, "triangle");
+		
+
+		for (int i = 0; i < arr.length; i++) 
+			arr[i] = Algorithm.randUniform(6) ;
+
+		DataVisualizer.writeData(arr, "uniforme 6");
+		
+		
+
 		for (int i = 0; i < arr.length; i++) 
 			arr[i] = Algorithm.randDropClass();
 		
@@ -33,6 +56,9 @@ public class DataVisualizerTest {
 		}
 			
 		DataVisualizer.writeData(map, "MAPrandMob");
+		
+		 * 
+		 */
 		
 		DataVisualizer.main(args);
 	}
