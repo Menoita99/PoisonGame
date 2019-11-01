@@ -1,6 +1,5 @@
 package game.objects;
 
-import game.algorithms.Algorithm;
 import game.controllers.GameController;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -19,8 +18,8 @@ public class Player extends Movable implements Gravitable{
 	private int speedMult = 1;
 	private int jumpForce = 1;
 	private boolean canJump = false;
-	private int baseMove = 5;
-	private int baseJump = 20;
+	private int baseMove = 4;
+	private int baseJump = 18;
 	private int yVelocity = 0;
 	
 

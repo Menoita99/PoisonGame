@@ -162,7 +162,7 @@ public class DataVisualizer extends Application{
 	 */
 	@FXML
 	public void removeChart(ActionEvent event) {
-		System.out.println("To implement");
+		System.out.println("To implement");//TODO
 	}
 
 

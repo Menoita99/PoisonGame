@@ -189,7 +189,7 @@ public class GameController implements Controllable, Initializable{
 			return;
 		case '1':	//platform
 			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, //Creates platform
-					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE);
+					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE,this);
 
 			objects.add(platform);																		//add platform to render list
 			return;

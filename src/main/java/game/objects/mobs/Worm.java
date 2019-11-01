@@ -1,6 +1,7 @@
 package game.objects.mobs;
 
 import game.objects.Strikable;
+import game.utils.Cutter;
 import javafx.scene.image.Image;
 
 public class Worm extends GravitableEnemy{
@@ -27,8 +28,8 @@ public class Worm extends GravitableEnemy{
 	 */
 	private void initGraphics(Image img) {			//monkey image have this format: [r r r r l l l l]
 
-		for(Image i:imageCutter(img, 2)) 			//cuts in 2 (right part and left part)
-			for(Image motion : imageCutter(i, 4)) 	//cuts to obtain motion images
+		for(Image i:Cutter.imageCutter(img, 2)) 			//cuts in 2 (right part and left part)
+			for(Image motion : Cutter.imageCutter(i, 4)) 	//cuts to obtain motion images
 				getImages().add(motion);
 
 		setImage(getImages().get(0));
