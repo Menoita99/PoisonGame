@@ -45,7 +45,7 @@ public class Algorithm {
 	}
 	
 	public static double normal( double media, double var, double ddown, double dup ) {
-		assert(var > 0 && ddown < dup);
+		assert (var > 0 && ddown < dup);
 		double p, p1, p2, x;
 		do {
 			do {
@@ -54,6 +54,15 @@ public class Algorithm {
 				p = p1 * p1 + p2 * p2;
 			} while ( p >= 1. );
 			x = media + var * p1 * Math.sqrt(-2 * Math.log(p) / p);
+		} while ( x < ddown || x > dup);
+		return x;
+	}
+
+	public static double normal2( double media, double var, double ddown, double dup ) {
+		assert (var > 0 && ddown < dup);
+		double x;
+		do {
+			x = media+var*Math.sqrt(-2*(Math.log10(Math.random())/Math.log10(Math.E)))*Math.cos(2*Math.PI*Math.random());
 		} while ( x < ddown || x > dup);
 		return x;
 	}
