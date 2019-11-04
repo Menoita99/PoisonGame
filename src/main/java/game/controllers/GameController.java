@@ -31,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 
 public class GameController implements Controllable, Initializable{
 
+	private static final int UPDATE_DISTANCE = 100;
 	private static final String GRAPHIC_PATH = "src/main/resources/images";
 //	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
 //	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
@@ -120,7 +121,10 @@ public class GameController implements Controllable, Initializable{
 			if(viewPort.getBoundsInParent().intersects(sprite.getBoundary()) || sprite.getLayer()==0) {	//this renders background(layer 0) and objects that are in viewPort
 				GraphicsContext gc = canvas.get(sprite.getLayer()).getGraphicsContext2D();
 				sprite.render(gc,viewPort.getLayoutX(),viewPort.getLayoutY());			//draw canvas
-			}
+				
+			}else if(viewPort.getBoundsInParent().intersects(sprite.getX()-UPDATE_DISTANCE,sprite.getY()-UPDATE_DISTANCE,
+															 sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
+					sprite.update();
 		}
 	}
 
@@ -161,7 +165,7 @@ public class GameController implements Controllable, Initializable{
 
 		for (int i = 0; i < data.length; i++) 			
 			for (int j = 0; j < data[i].length(); j++) 
-				createEntities(data, i, j);
+				createEntitie(data, i, j);
 
 		Player p =  new Player(0, 0, idCounter, graphics.get("transferir") , BLOCKS_SIZE, BLOCKS_SIZE,this);
 		objects.add(p);
@@ -181,7 +185,7 @@ public class GameController implements Controllable, Initializable{
 	/**
 	 *Creates CanvasObjects giving the key Code 
 	 */
-	private void createEntities(String[] data, int i, int j) {
+	private void createEntitie(String[] data, int i, int j) {
 		idCounter++;
 
 		switch (data[i].charAt(j) ) {
@@ -190,7 +194,6 @@ public class GameController implements Controllable, Initializable{
 		case '1':	//platform
 			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, //Creates platform
 					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE,this);
-
 			objects.add(platform);																		//add platform to render list
 			return;
 		case '2':	//Monkey enemy
@@ -203,7 +206,7 @@ public class GameController implements Controllable, Initializable{
 					graphics.get(Bat.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(bat);	
 			return;
-		case '4':	//Bat enemy
+		case '4':	//Worm enemy
 			CanvasObject worm = new Worm(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(Worm.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(worm);	

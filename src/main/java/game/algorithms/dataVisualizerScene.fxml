@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,23 +14,24 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <MenuButton mnemonicParsing="false" prefHeight="29.0" prefWidth="76.0" text="Actions">
-                    <items>
-                      <MenuItem mnemonicParsing="false" onAction="#openNewWindow" text="New" />
-                      <MenuItem mnemonicParsing="false" onAction="#addChart" text="Add" />
-                        <MenuItem mnemonicParsing="false" onAction="#removeChart" text="Remove" />
-                    </items>
-                  </MenuButton>
+                  <MenuBar>
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem mnemonicParsing="false" onAction="#addChart" text="Open" />
+                              <MenuItem mnemonicParsing="false" onAction="#removeChart" text="remove" />
+                              <MenuItem mnemonicParsing="false" onAction="#openNewWindow" text="New" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
                   <ScrollPane VBox.vgrow="NEVER">
                      <content>
                         <HBox fx:id="checkBoxPanel" spacing="3.0" />
                      </content>
                   </ScrollPane>
-                  <ScrollPane VBox.vgrow="ALWAYS">
-                     <content>
-                        <HBox fx:id="chartPanel" />
-                     </content>
-                  </ScrollPane>
+                  <ScrollPane VBox.vgrow="ALWAYS" />
+                  <VBox fx:id="chartPanel" />
                </children>
             </VBox>
          </children>

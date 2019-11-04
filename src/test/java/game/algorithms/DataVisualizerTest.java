@@ -1,51 +1,28 @@
 package game.algorithms;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-
-import java.math.BigDecimal;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataVisualizerTest {
 
-	private static final int N_TEST = 10000000;
+	private static final int N_TEST = 5000000;
 
 	public static void main(String[] args) {
 		
-		double[] arr = new double[N_TEST];
+//		double[] arr = new double[N_TEST];
+//		
+//		Map<String,Double> map = new HashMap<>();	
+//		
+//		for (int i = 0; i < arr.length; i++) 
+//			arr[i] = Math.round(Algorithm.normal(25, Math.sqrt(5), 20, 30) * Math.pow(10, 1)) / Math.pow(10, 1) ;
+//
+//		DataVisualizer.writeData(arr, "normal");
 		
-		Map<String,Double> map = new HashMap<>();	
-		
-		
-		
-		for (int i = 0; i < arr.length; i++)
-			arr[i] = Double.parseDouble(BigDecimal.valueOf(Algorithm.normal2(25, Math.sqrt(5), 20, 30)).setScale(2, ROUND_HALF_UP).toPlainString()) ;
-
-		DataVisualizer.writeData(arr, "normal2");
-	
 		
 		/***
 		 * 
 		 * 
-		
-		for (int i = 0; i < arr.length; i++)
-			arr[i] = Double.parseDouble(BigDecimal.valueOf(Algorithm.triangle()).setScale(3, ROUND_HALF_UP).toPlainString()) ;
 
-		DataVisualizer.writeData(arr, "triangle");
-		
-		for (int i = 0; i < 10; i++) {
-			double a = Algorithm.triangle();
-			System.out.println(BigDecimal.valueOf(a).setScale(3, ROUND_HALF_UP).toPlainString() + "  ////  " + a);
-		}
-		
-		
-		
-		for (int i = 0; i < arr.length; i++) 
-			arr[i] = Math.round(Algorithm.normal(25, Math.sqrt(5), 20, 30) * Math.pow(10, 1)) / Math.pow(10, 1) ;
-
-		DataVisualizer.writeData(arr, "normal");
-		
 		for (int i = 0; i < arr.length; i++) 
 			arr[i] = Math.round(Algorithm.triangle() * Math.pow(10, 1)) / Math.pow(10, 1) ;
 

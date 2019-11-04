@@ -20,7 +20,7 @@ public class ManagerController extends Application {
 	private Map<String,Parent> scenes = new HashMap<>();   				//Store the load nodes of scenes
 	private Map<String,Controllable> controllers = new HashMap<>();		//Store the controllers
 
-	private Map<String, Object> propertyMap = new HashMap<>();		//Stores attributes used to communicate between scenes
+	private Map<String, Object> propertyMap = new HashMap<>();			//Stores attributes used to communicate between scenes
 	
 	private Pane root;													//root pane
 
@@ -67,13 +67,6 @@ public class ManagerController extends Application {
 	public Scene getScene() {
 		return scene;
 	}
-	
-//	/**
-//	 * @return the window
-//	 */
-//	public Stage getWindow() {
-//		return window;
-//	}
 	
 
 	/**
