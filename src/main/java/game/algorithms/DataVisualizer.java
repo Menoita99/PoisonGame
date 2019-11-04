@@ -28,6 +28,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -35,7 +36,7 @@ public class DataVisualizer extends Application{
 
 	private static final String FILE_DIR = "src/main/resources/algorithms_Data/";
 	@FXML private HBox checkBoxPanel;
-	@FXML private HBox chartPanel;
+	@FXML private VBox chartPanel;
 	
 	private Stage window;
 	private int chartId = 0;
@@ -121,7 +122,7 @@ public class DataVisualizer extends Application{
 
 		File selectedFile = fc.showOpenDialog(null);			//Opens file chooser
 
-		if(selectedFile.getName().matches(".+\\.txt")) {		//validates file
+		if(selectedFile != null && selectedFile.getName().matches(".+\\.txt")) {		//validates file
 
 			try(Scanner s = new Scanner(selectedFile)){			//opens file
 

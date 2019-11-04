@@ -1,6 +1,7 @@
 package game.objects.mobs;
 
 import game.controllers.GameController;
+import game.objects.CanvasObject;
 import game.objects.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
@@ -14,6 +15,8 @@ public class Bat extends Enemy {
 	//motion attributes
 	private int imgIndex = 0;
 	private int frameCount = 0;
+	
+	
 
 	public Bat(double x, double y, int id, Image graphicImage, double width, double height,GameController controller) {
 		super(x, y, id, graphicImage, width, height, controller);
@@ -44,12 +47,13 @@ public class Bat extends Enemy {
 		else
 			moveRigth();
 		motion();
+		
 	}
 
 
 	@Override
 	public void motion() {
-		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 	//count the frames
+		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 	//set's frames counter
 
 		if(frameCount%IMAGE_RATE == 0 || isDirectionChanged() ) {
 			setDirectionChanged(false);
@@ -75,10 +79,10 @@ public class Bat extends Enemy {
 
 	@Override
 	public double getDMG() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getAttackDamage();
 	}
 
+	
 	@Override
 	public void takeDMG(Strikable s) {
 		// TODO Auto-generated method stub
@@ -93,11 +97,32 @@ public class Bat extends Enemy {
 	}
 	
 	
+	
+	
 	/**
 	 * Class that represents the bat special attack
 	 */
-	
-	
+	private class batSpecialAttack extends CanvasObject implements Strikable{
+
+
+		public batSpecialAttack(double x, double y, int id, Image graphicImage, double width, double height,int layer) {
+			super(x, y, id, graphicImage, width, height, layer);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public double getDMG() {
+			//TODO Auto-generated constructor stub
+			return 0;
+		}
+
+		@Override
+		public void update() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	
 
 }

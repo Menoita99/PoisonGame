@@ -9,14 +9,14 @@ public class DataVisualizerTest {
 
 	public static void main(String[] args) {
 		
-		double[] arr = new double[N_TEST];
-		
-		Map<String,Double> map = new HashMap<>();	
-		
-		for (int i = 0; i < arr.length; i++) 
-			arr[i] = Math.round(Algorithm.normal(25, Math.sqrt(5), 20, 30) * Math.pow(10, 1)) / Math.pow(10, 1) ;
-
-		DataVisualizer.writeData(arr, "normal");
+//		double[] arr = new double[N_TEST];
+//		
+//		Map<String,Double> map = new HashMap<>();	
+//		
+//		for (int i = 0; i < arr.length; i++) 
+//			arr[i] = Math.round(Algorithm.normal(25, Math.sqrt(5), 20, 30) * Math.pow(10, 1)) / Math.pow(10, 1) ;
+//
+//		DataVisualizer.writeData(arr, "normal");
 		
 		
 		/***
