@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.algorithms.DataVisualizer">
+<VBox prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.algorithms.DataVisualizer">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
@@ -16,7 +16,7 @@
                <children>
                   <MenuBar>
                     <menus>
-                      <Menu mnemonicParsing="false" text="File">
+                      <Menu mnemonicParsing="false" text="Menu">
                         <items>
                           <MenuItem mnemonicParsing="false" onAction="#addChart" text="Open" />
                               <MenuItem mnemonicParsing="false" onAction="#removeChart" text="remove" />
@@ -25,13 +25,16 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <ScrollPane VBox.vgrow="NEVER">
+                  <ScrollPane prefHeight="15.0" prefWidth="1100.0" VBox.vgrow="NEVER">
                      <content>
                         <HBox fx:id="checkBoxPanel" spacing="3.0" />
                      </content>
                   </ScrollPane>
-                  <ScrollPane VBox.vgrow="ALWAYS" />
-                  <VBox fx:id="chartPanel" />
+                  <ScrollPane prefHeight="600.0" prefWidth="1000.0" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="chartPanel" prefWidth="1000.0" />
+                     </content>
+                  </ScrollPane>
                </children>
             </VBox>
          </children>
