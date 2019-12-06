@@ -5,11 +5,17 @@ import java.util.Map;
 
 public class DataVisualizerTest {
 
-	private static final int N_TEST = 5000000;
+	private static final int N_TEST = 10000000;
+	
+	public static double round (double value, int precision) {
+	    int scale = (int) Math.pow(10, precision);
+	    return (double) Math.round(value * scale) / scale;
+	}
+	
 
 	public static void main(String[] args) {
 		
-//		double[] arr = new double[N_TEST];
+		double[] arr = new double[N_TEST];
 //		
 //		Map<String,Double> map = new HashMap<>();	
 //		
@@ -18,24 +24,24 @@ public class DataVisualizerTest {
 //
 //		DataVisualizer.writeData(arr, "normal");
 		
+	
+
+//		for (int i = 0; i < arr.length; i++) 
+//			arr[i] = Math.round(Algorithm.gaussian() * Math.pow(10, 1)) / Math.pow(10, 1) ;
+//
+//		DataVisualizer.writeData(arr, "g");
+		
+		
+		
+		for (int i = 0; i < arr.length; i++) 
+			arr[i] = round(Algorithm.triangle(),2) ;
+
+		DataVisualizer.writeData(arr, "triangle");
+		
 		
 		/***
 		 * 
 		 * 
-
-		for (int i = 0; i < arr.length; i++) 
-			arr[i] = Math.round(Algorithm.triangle() * Math.pow(10, 1)) / Math.pow(10, 1) ;
-
-		DataVisualizer.writeData(arr, "triangle");
-		
-
-		for (int i = 0; i < arr.length; i++) 
-			arr[i] = Algorithm.randUniform(6) ;
-
-		DataVisualizer.writeData(arr, "uniforme 6");
-		
-		
-
 		for (int i = 0; i < arr.length; i++) 
 			arr[i] = Algorithm.randDropClass();
 		

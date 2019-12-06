@@ -1,5 +1,7 @@
 package game.algorithms;
 
+import org.apache.commons.math3.special.Erf;
+
 public class Algorithm {
 
 	//For n cases return a random n
@@ -32,9 +34,8 @@ public class Algorithm {
 		return Math.sqrt(25*Math.random())+7;
 	}
 
-	public double gaussian () {
-		//return erfInv(((130091176/66737197)*Math.random())-0.974652681323)*Math.sqrt(10)+25;
-		return 0;
+	public static double gaussian () {
+		return Erf.erfInv(((130091176/66737197)*Math.random())-0.974652681323)*Math.sqrt(10)+25;
 	}
 
 	

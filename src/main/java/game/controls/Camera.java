@@ -22,7 +22,7 @@ public class Camera {
 
 	
 	public Camera(Scene scene,CanvasObject targetObject, DoubleProperty currentLevelWidth) {
-		this.targetObject = targetObject;					//object that camera will focus on
+		this.targetObject = targetObject;							//object that camera will focus on
 		
 		maxWidth.bind(currentLevelWidth);							//Responsive level width (Useful for different width level of hell)
 		viewPort.widthProperty().bind(scene.widthProperty());		//Responsive resize

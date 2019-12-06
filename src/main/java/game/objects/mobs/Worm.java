@@ -1,5 +1,6 @@
 package game.objects.mobs;
 
+import game.controllers.GameController;
 import game.objects.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
@@ -16,7 +17,7 @@ public class Worm extends GravitableEnemy{
 
 
 
-	public Worm(double x, double y, int id, javafx.scene.image.Image graphicImage, double width, double height,game.controllers.GameController controller) {
+	public Worm(double x, double y, int id, javafx.scene.image.Image graphicImage, double width, double height,GameController controller) {
 		super(x, y, id, graphicImage, width, height, controller);
 		initGraphics(graphicImage);
 	}
@@ -26,7 +27,7 @@ public class Worm extends GravitableEnemy{
 	/**
 	 * fills images list
 	 */
-	private void initGraphics(Image img) {			//monkey image have this format: [r r r r l l l l]
+	private void initGraphics(Image img) {					//monkey image have this format: [r r r r l l l l]
 
 		for(Image i:Cutter.imageCutter(img, 2)) 			//cuts in 2 (right part and left part)
 			for(Image motion : Cutter.imageCutter(i, 4)) 	//cuts to obtain motion images
@@ -73,7 +74,7 @@ public class Worm extends GravitableEnemy{
 	 */
 	@Override
 	public void motion() {
-		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 	//count the frames
+		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 					//count the frames
 
 		if(frameCount%IMAGE_RATE == 0 || isDirectionChanged() ) {
 			setDirectionChanged(false);

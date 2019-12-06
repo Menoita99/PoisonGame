@@ -14,6 +14,7 @@ import game.controls.Camera;
 import game.controls.LevelData;
 import game.objects.Background;
 import game.objects.CanvasObject;
+import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
 import game.objects.mobs.*;
@@ -31,7 +32,7 @@ import javafx.scene.shape.Rectangle;
 
 public class GameController implements Controllable, Initializable{
 
-	private static final int UPDATE_DISTANCE = 100;
+	private static final int UPDATE_DISTANCE = 200;
 	private static final String GRAPHIC_PATH = "src/main/resources/images";
 //	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
 //	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
@@ -41,23 +42,28 @@ public class GameController implements Controllable, Initializable{
 	private double yFactor=1;
 	private int idCounter = 0;
 	
+	private DoubleProperty hellStartHeight   = new SimpleDoubleProperty();
 	private DoubleProperty currentLevelWidth = new SimpleDoubleProperty();
 
-	private ManagerController manager;
+	private ManagerController manager;								//scene manager
 
-	private Camera camera;
+	private Camera camera;											//camera
 
-	private Map<KeyCode, Boolean> keys = new HashMap<>();
+	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed
 
-	private	Map<String, Image> graphics = new HashMap<>();
+	private	Map<String, Image> graphics = new HashMap<>();			//graphics
 
-	private AnimationTimer gameLoop;
+	private AnimationTimer gameLoop;								//loop
 
-	@FXML private StackPane mainPane;
+	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
+	
+	private Player player;											//Player instance
 
-	private	List<CanvasObject> objects = new ArrayList<>();
+	private	List<CheckPoint> checkPoints = new ArrayList<>();		//checkpoints
+	
+	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects
 
-	private	Map<Integer, Canvas> canvas = new HashMap<>();
+	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
 	/*LAYERS STRUCT
 	 *
@@ -163,15 +169,9 @@ public class GameController implements Controllable, Initializable{
 		
 		currentLevelWidth.set(data[0].length()*xFactor*BLOCKS_SIZE);	//get's the level width
 
-		for (int i = 0; i < data.length; i++) 			
-			for (int j = 0; j < data[i].length(); j++) 
+		for (int i = 0; i < data.length; i++)  			
+			for (int j = 0; j < data[i].length(); j++)  
 				createEntitie(data, i, j);
-
-		Player p =  new Player(0, 0, idCounter, graphics.get("transferir") , BLOCKS_SIZE, BLOCKS_SIZE,this);
-		objects.add(p);
-		idCounter++;
-		
-		camera = new Camera(manager.getScene(),p,currentLevelWidth);						//setting camera
 
 		Background b = new Background(idCounter, graphics.get(Background.getGRAPHIC()),camera);
 		objects.add(b);
@@ -189,6 +189,9 @@ public class GameController implements Controllable, Initializable{
 		idCounter++;
 
 		switch (data[i].charAt(j) ) {
+		case '-':
+			hellStartHeight.set(j*BLOCKS_SIZE);
+			return;
 		case '0':
 			return;
 		case '1':	//platform
@@ -210,6 +213,21 @@ public class GameController implements Controllable, Initializable{
 			CanvasObject worm = new Worm(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(Worm.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(worm);	
+			return;
+		case '5'://Player
+			player =  new Player(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, 
+									idCounter,graphics.get( Player.GRAPHIC ) , BLOCKS_SIZE, BLOCKS_SIZE,this);
+			objects.add(player);
+			
+			camera = new Camera(manager.getScene(),player,currentLevelWidth);						//setting camera
+			return;
+		case '6'://CheckPoint
+			CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(checkPoint);
+			
+			if(checkPoints.isEmpty()) ((CheckPoint) checkPoint).setActive(true); 			//To have always one checkpoint active
+			checkPoints.add((CheckPoint) checkPoint);
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
@@ -274,12 +292,49 @@ public class GameController implements Controllable, Initializable{
 
 
 	/**
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+
+
+
+	/**
+	 * @return the hellStartHeight
+	 */
+	public DoubleProperty getHellStartHeight() {
+		return hellStartHeight;
+	}
+
+
+
+
+	/**
 	 * Starts game loop
 	 */
 	public void start() {
 		initListeners();
 		loadField();		//loads field using graphics
 		gameLoop.start();	//Starts gameLoop		
+	}
+
+
+
+	/**
+	 * @return the Check Point with the farthest x 
+	 */
+	public CheckPoint getLastActiveCheckPoint() {
+		double maxX = -1;
+		CheckPoint lastcp = null;
+		for (CheckPoint cp : checkPoints) {
+			if(cp.getX()> maxX) {
+				lastcp = cp;
+				maxX = cp.getX();
+			}
+		}
+		return lastcp;
 	}
 
 

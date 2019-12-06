@@ -5,6 +5,8 @@ import java.util.Random;
 public class LevelData {
 
 	private static LevelData INSTANCE;
+	
+	
 
 	private final String[] LEVEL1 = new String[] {
 			"000000000000000000000000000000000000000000000000000000000000000000",
@@ -24,10 +26,11 @@ public class LevelData {
 			"000000000000000011111100000000000000001111111100000000000000000000",
 			"000000000000000000000000000000000000000011111000000000000000000000",
 			"000000000000411110000000000000011110000000000000001111000000000000",
-			"000000000001110000000000000011110000000000000000111110200010000000",
+			"560000000001110000000000000011110000000000000000111110200010000000",
 			"111111111111100000001111100000000000001000111111111111110000000000",
 			"000000000000000000111100000000000000000000000000000000000100041111",
-			"000000000000000000000000000000000000000000000000000000000111111100"
+			"000000000000000000000000000000000000000000000000000000000111111100",
+			"-00000000000000000000000000000000000000000000000000000000000000000"
 	};
 
 	private final String[] LEVEL2 = new String[] {
@@ -45,10 +48,11 @@ public class LevelData {
 			"000000000000000000000000000000000000000011111000000000000000000000",
 			"000000000000011110000000000000011110000000000000001111000000000000",
 			"000000000000000000000000000001111111110000000000000000000000000000",
-			"000000000000000000000000001111110000000000000000000000000000000000",
+			"560000000000000000000000001111110000000000000000000000000000000000",
 			"111111111111100000001111100000000000001000111111111111110000000000",
 			"000000000000000000000000000000000000000000000000000000000000000000",
-			"000000000000000000000000000000000000000000000000000000000000000000"
+			"000000000000000000000000000000000000000000000000000000000000000000",
+			"-00000000000000000000000000000000000000000000000000000000000000000"
 	};
 
 	public static LevelData getInstance() {
@@ -59,13 +63,12 @@ public class LevelData {
 	public String[] getLevel(int i) {
 		switch (i) {
 		case 1:
-			return LEVEL1;
+			return fusion(LEVEL1, hellGenerator(LEVEL1[0].length()));
 		case 2:
-			return LEVEL2;
-		case 3:
-			return levelGenerator(20, 250);
+			return fusion(LEVEL2, hellGenerator(LEVEL2[0].length()));
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + i);
+			String[] generated = levelGenerator(20, 250);
+			return fusion(generated, hellGenerator(generated[0].length()));
 		}
 	}
 	
@@ -88,4 +91,51 @@ public class LevelData {
 		
 		return level;
 	}
+	
+	
+	
+	/**
+	 * Generates hell level
+	 */
+	private String[] hellGenerator(int columns) {
+		
+		return fusion(blankSpace(columns,20), levelGenerator(18, columns));
+	}
+	
+	
+	
+
+	/**
+	 * This method puts array2 after array1 and output a single array with 
+	 * values from the 2 arrays
+	 */
+	public static String[] fusion(String[] array1, String[] array2) {
+		String[] output =  new String[array1.length+array2.length];
+
+		for (int i = 0; i < array1.length; i++) 
+			output[i] = array1[i];
+
+		for (int i = array1.length; i-array1.length < array2.length; i++) 
+			output[i] = array2[i-array1.length];
+
+		return output;
+	}
+	
+	
+	
+	
+	/**
+	 * Produces rows of blackSpaces
+	 */
+	public static String[] blankSpace(int columns, int spaces) {
+		String[] output = new String[spaces];
+		for(int i = 0; i < spaces ; i++) {
+			String blank = "";
+			for(int j = 0; j < columns ; j++)
+				blank+= "0";
+			output[i] = blank;
+		}
+		return output;
+	}
+	
 }

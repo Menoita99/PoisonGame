@@ -7,9 +7,9 @@ import javafx.scene.image.Image;
 
 public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
-	private static final double MAX_Y_VELOCITY = 10;
+	private static final double MAX_Y_VELOCITY = 10;	//pixel per frame
 
-	private double yVelocity = 0;						//pixel per frame
+	private double yVelocity = 0;						
 
 
 	

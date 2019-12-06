@@ -1,5 +1,4 @@
 package main;
-import game.algorithms.Algorithm;
 import game.controllers.ManagerController;
 
 public class Main {
@@ -9,8 +8,6 @@ public class Main {
 	 * 
 	 * To run this program call this method
 	 * 
-	 * 
-	 * FUCIONA PELO AMOR DE DEUS
 	 */
 	
 	public static void main(String[] args) {

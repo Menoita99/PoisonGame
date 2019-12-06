@@ -7,9 +7,8 @@ import javafx.scene.input.KeyCode;
 public class Player extends Movable implements Gravitable{
 
 	private static final int LAYER = 2;
+	public static final String GRAPHIC = "transferir";
 	private GameController gameController;
-	
-	private static String GRAPHIC = "player";
 	
 	//player stats
 	private int hp = 100;
@@ -135,10 +134,6 @@ public class Player extends Movable implements Gravitable{
 	
 	//Getters & Setters
 	
-	
-	public String getGRAPHIC() {
-		return GRAPHIC;
-	}
 	
 	
 	public int getHP() {
