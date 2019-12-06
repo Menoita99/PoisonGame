@@ -329,7 +329,7 @@ public class GameController implements Controllable, Initializable{
 		double maxX = -1;
 		CheckPoint lastcp = null;
 		for (CheckPoint cp : checkPoints) {
-			if(cp.getX()> maxX) {
+			if(cp.isActive() && cp.getX()> maxX) {
 				lastcp = cp;
 				maxX = cp.getX();
 			}
