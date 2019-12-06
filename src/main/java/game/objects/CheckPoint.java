@@ -24,10 +24,8 @@ public class CheckPoint extends CanvasObject {
 	
 	@Override
 	public void update() {
-		if(controller.getPlayer().intersects(this)) {
-			System.out.println("TOUCHING CheckPoint");
+		if(controller.getPlayer().intersects(this)) 
 			setActive(true);
-		}
 	}
 
 	
