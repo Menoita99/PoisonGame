@@ -15,6 +15,7 @@ import game.controls.LevelData;
 import game.objects.Background;
 import game.objects.CanvasObject;
 import game.objects.CheckPoint;
+import game.objects.Item;
 import game.objects.Platform;
 import game.objects.Player;
 import game.objects.mobs.*;
@@ -69,13 +70,13 @@ public class GameController implements Controllable, Initializable{
 	 *
 	 *0- BACKGROUND
 	 *
-	 *1- SECRECT DOORS, TRESURES
+	 *1- SECRECT DOORS, TRESURES, DROPS, CHECKPOINTS
 	 *
-	 *2- ENEMIES, PLAYER, PLATFORMS, DROPS
+	 *2- ENEMIES, PLAYER, PLATFORMS
 	 *
 	 *3- EFFECTS, e.g: explosion effects
 	 *
-	 *4- this layer can be for future stuff or can be for display information as player heal
+	 *4- this layer can be for future stuff or can be for display information as player heal/damage
 	 */
 
 
@@ -171,7 +172,7 @@ public class GameController implements Controllable, Initializable{
 
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
-				createEntitie(data, i, j);
+				createEntity(data, i, j);
 
 		Background b = new Background(idCounter, graphics.get(Background.getGRAPHIC()),camera);
 		objects.add(b);
@@ -185,7 +186,7 @@ public class GameController implements Controllable, Initializable{
 	/**
 	 *Creates CanvasObjects giving the key Code 
 	 */
-	private void createEntitie(String[] data, int i, int j) {
+	private void createEntity(String[] data, int i, int j) {
 		idCounter++;
 
 		switch (data[i].charAt(j) ) {
@@ -228,6 +229,11 @@ public class GameController implements Controllable, Initializable{
 			
 			if(checkPoints.isEmpty()) ((CheckPoint) checkPoint).setActive(true); 			//To have always one checkpoint active
 			checkPoints.add((CheckPoint) checkPoint);
+			return;
+		case '7'://Item
+			CanvasObject item = new Item(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Item.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(item);
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
@@ -279,6 +285,13 @@ public class GameController implements Controllable, Initializable{
 				output.add(canvasObject);		
 		return output;
 	}
+
+
+
+	public List<CanvasObject> getObjects() {
+		return objects;
+	}
+
 
 
 

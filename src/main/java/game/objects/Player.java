@@ -14,12 +14,13 @@ public class Player extends Movable implements Gravitable{
 	private int hp = 100;
 	private boolean dead = false;
 	private double damageMult = 1.0;
-	private int speedMult = 1;
-	private int jumpForce = 1;
+	private double speedMult = 1;
+	private double jumpForce = 1;
 	private boolean canJump = false;
 	private int baseMove = 4;
 	private int baseJump = 18;
 	private int yVelocity = 0;
+	private boolean buffed = false;
 	
 
 
@@ -61,7 +62,7 @@ public class Player extends Movable implements Gravitable{
 	 */
 	private void jump() {
 		if (canJump) {
-			yVelocity = yVelocity - (baseJump*jumpForce);
+			yVelocity = yVelocity - ((int) (baseJump*jumpForce));
 			canJump = false;
 		}
 	}
@@ -118,19 +119,18 @@ public class Player extends Movable implements Gravitable{
 						return;
 					}
 				} else {
-					if(entity.getBoundary().intersects(getX()+1, getY()-1, getWidth()-2, getHeight()) && !entity.equals(this)){
+					if( ( entity.getBoundary().intersects(getX()+1, getY()-1, getWidth()-2, getHeight()) && !entity.equals(this) ) || getY()<=0 ){
 						yVelocity = 0;
 						return;
 					}
 				}
 			}
+			canJump = false;
 			setY(getY() + (movingDown ? G_FORCE : -G_FORCE));
 		}
 	}
 	
-	
-
-	
+		
 	
 	//Getters & Setters
 	
@@ -152,20 +152,35 @@ public class Player extends Movable implements Gravitable{
 	}
 	
 	
-	public int getSpeed() {
+	public double getSpeedMult() {
 		return speedMult;
 	}
-	public void setSpeed(int speed) {
-		speedMult = speed;
+	public void setSpeedMult(double d) {
+		speedMult = d;
 	}
 	
 	
-	public int getJumpForce() {
+	public double getJumpForce() {
 		return jumpForce;
 	}
 	
-	public void setJumpForce(int JF) {
-		jumpForce = JF;
+	public void setJumpForce(double d) {
+		jumpForce = d;
+	}
+
+
+	public boolean isBuffed() {
+		return buffed;
+	}
+
+
+	public void setBuffed(boolean buffed) {
+		this.buffed = buffed;
+	}
+
+
+	public static int getPlayerLayer() {
+		return LAYER;
 	}
 	
 		
