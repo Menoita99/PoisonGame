@@ -5,6 +5,7 @@ import java.util.List;
 
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
+import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Movable;
@@ -22,7 +23,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	private double xVelocity = 5;						//pixel per frame
 	
 	private double healPoints;							//this must be set by our random algorithm	
-	private double attackDamage;						//this must be set by our random algorithm	
+	private boolean inCooldown = false;
 		
 	private GameController controller;	
 	
@@ -31,6 +32,9 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	
 	private static final double BASE_HP = 50;
 	private static final double HP_RATIO = 0.20;
+
+	
+	
 	
 	
 	public Enemy(double x, double y, int id, Image graphicImage, double width, double height,double hp, GameController controller) {
@@ -41,6 +45,8 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		double hpRange = hpMedia * HP_RATIO;
 		healPoints = Algorithm.normal(hpMedia, Math.sqrt(hpRange), hpMedia-hpRange, hpMedia+hpRange);
 	}
+
+	
 	
 	
 	
@@ -52,7 +58,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	 * This method must implement the entity motion, the idea of movement
 	 */
 	public abstract void motion();
-	
+
 	
 	
 	
@@ -61,7 +67,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	
 	
 	/**
-	 * This method moves to Right the entity 
+	 * This method moves the entity to Right 
 	 * if it collides with something it changes direction (go to the left)
 	 */
 	public void moveRigth() {
@@ -85,11 +91,13 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		setX(getX() + 1);			//move 1 pixel
 	}
 
-
+	
+	
+	
 	
 	/**
-	 * This method moves to left the entity 
-	 * if it collides with something it changes direction (go to the rigth)
+	 * This method moves to the entity left 
+	 * if it collides with something it changes direction (go to the right)
 	 */
 	public void moveLeft() {
 		
@@ -116,6 +124,42 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	
 	
 	
+	
+	/**
+	 * This method when called set's inCooldown to true and starts cool down timer.
+	 * when cool down timer ends, inCooldown is set to false
+	 */
+	public void beginCoolDown() {//TODO triangle parameters
+		if(!inCooldown) {
+			inCooldown = true;
+			new Thread (() ->{
+				try {
+					double time = Algorithm.triangle();
+					System.out.println("cooldown time-> " + time);
+					Thread.sleep((long)time*1000);
+					inCooldown = false;
+				} catch (InterruptedException e) { e.printStackTrace(); }
+			}).start();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 *This method drops an item when called
+	 */
+	public void dropItem() {
+		Item drop = new Item(getX(), getY(), getController().getNewId(), getController().getGraphic(Item.GRAPHIC), 
+							GameController.BLOCKS_SIZE, GameController.BLOCKS_SIZE, getController());
+		getController().addEntity(drop);
+	}
+	
+	
+	
 	//GETTERS AND SETTERS
 	
 	/**
@@ -125,6 +169,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return healPoints;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @param healPoints the healPoints to set
 	 */
@@ -132,20 +180,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		this.healPoints = healPoints;
 	}
 
-	/**
-	 * @return the attackDamage
-	 */
-	public double getAttackDamage() {
-		return attackDamage;
-	}
-
-	/**
-	 * @param attackDamage the attackDamage to set
-	 */
-	public void setAttackDamage(double attackDamage) {
-		this.attackDamage = attackDamage;
-	}
-
+	
+	
+	
+	
 	/**
 	 * @return the controller
 	 */
@@ -153,6 +191,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return controller;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @return the images
 	 */
@@ -167,6 +209,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		this.images = images;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @return the directionChanged
 	 */
@@ -174,6 +220,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return directionChanged;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @param directionChanged the directionChanged to set
 	 */
@@ -181,6 +231,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		this.directionChanged = directionChanged;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @return the xVelocity
 	 */
@@ -188,6 +242,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return xVelocity;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @param xVelocity the xVelocity to set
 	 */
@@ -195,6 +253,10 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		this.xVelocity = xVelocity;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @return the isLeft
 	 */
@@ -202,10 +264,25 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return isLeft;
 	}
 
+	
+	
+	
+	
 	/**
 	 * @param isLeft the isLeft to set
 	 */
 	public void setLeft(boolean isLeft) {
 		this.isLeft = isLeft;
+	}
+
+	
+	
+	
+	
+	/**
+	 * @return the isInCooldown
+	 */
+	public boolean isInCooldown() {
+		return inCooldown;
 	}
 }

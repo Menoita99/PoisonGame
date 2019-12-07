@@ -39,7 +39,7 @@ public class GameController implements Controllable, Initializable{
 	//	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
 	//	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
 	private static final int LAYERS = 5;
-	private static final int BLOCKS_SIZE = 30;	
+	public static final int BLOCKS_SIZE = 30;	
 	private double xFactor=1;
 	private double yFactor=1;
 	private int idCounter = 0;
@@ -50,21 +50,21 @@ public class GameController implements Controllable, Initializable{
 
 	private ManagerController manager;								//scene manager
 
-	private Camera camera;											//camera
+	private Camera camera;											
 
-	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed
+	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed list
 
-	private	Map<String, Image> graphics = new HashMap<>();			//graphics
+	private	Map<String, Image> graphics = new HashMap<>();			
 
-	private AnimationTimer gameLoop;								//loop
+	private AnimationTimer gameLoop;								
 
 	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
 
-	private Player player;											//Player instance
+	private Player player;											
 
 	private	CheckPoint checkPoint;									//Last checkpoint
 
-	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects
+	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects (render list)
 
 	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
@@ -212,9 +212,9 @@ public class GameController implements Controllable, Initializable{
 		case '0':
 			return;
 		case '1':	//platform
-			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, //Creates platform
+			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, 
 					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE,this);
-			objects.add(platform);																		//add platform to render list
+			objects.add(platform);																		
 			return;
 		case '2':	//Monkey enemy
 			CanvasObject monkey = new Monkey(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -239,21 +239,7 @@ public class GameController implements Controllable, Initializable{
 			camera = new Camera(manager.getScene(),player,currentLevelWidth,currentLevelHeight);	//setting camera
 			return;
 		case '6':	//CheckPoint
-			CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
-			objects.add(checkPoint);
-
-			if(this.checkPoint == null) {															//this conditional block sets the first check point
-				((CheckPoint)checkPoint).setActive(true);
-				this.checkPoint = ((CheckPoint)checkPoint);
-				
-			}else if(this.checkPoint.getX() > checkPoint.getX()){
-				
-				this.checkPoint.setActive(false);
-				((CheckPoint)checkPoint).setActive(true);
-				this.checkPoint = ((CheckPoint)checkPoint);
-			}
-			
+			createCheckPoint(i, j);
 			return;
 		case '7':	//Item
 			CanvasObject item = new Item(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -267,6 +253,30 @@ public class GameController implements Controllable, Initializable{
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
+		}
+	}
+
+
+
+	
+
+
+	/**
+	 * Creates checkPoint instance
+	 */
+	private void createCheckPoint(int i, int j) {
+		CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+		objects.add(checkPoint);
+
+		if(this.checkPoint == null) {															//this conditional block sets the first check point
+			((CheckPoint)checkPoint).setActive(true);
+			this.checkPoint = ((CheckPoint)checkPoint);
+			
+		}else if(this.checkPoint.getX() > checkPoint.getX()){
+			
+			this.checkPoint.setActive(false);
+			((CheckPoint)checkPoint).setActive(true);
+			this.checkPoint = ((CheckPoint)checkPoint);
 		}
 	}
 
@@ -452,5 +462,17 @@ public class GameController implements Controllable, Initializable{
 	 */
 	public int getNewId() {
 		return idCounter++;
+	}
+
+
+
+
+
+	/**
+	 * @param graphic image name
+	 * @return returns the image with the name given
+	 */
+	public Image getGraphic(String graphic) {
+		return graphics.get(graphic);
 	}
 }

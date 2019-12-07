@@ -2,12 +2,14 @@ package game.objects;
 
 import game.controllers.GameController;
 import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Gravitable;
 import game.objects.mechanics.Movable;
+import game.objects.mechanics.Strikable;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
-public class Player extends Movable implements Gravitable{
+public class Player extends Movable implements Gravitable, Damageable{
 
 	private static final int LAYER = 2;
 	public static final String GRAPHIC = "transferir";
@@ -184,6 +186,13 @@ public class Player extends Movable implements Gravitable{
 
 	public static int getPlayerLayer() {
 		return LAYER;
+	}
+
+
+	@Override
+	public void takeDMG(Strikable s) {
+		// TODO Auto-generated method stub
+		System.out.println("Player was damaged by "+s.getDMG()+" and the mob was "+ s.getClass());
 	}
 	
 		

@@ -2,25 +2,26 @@ package game.objects.mobs;
 
 
 
-import java.lang.ModuleLayer.Controller;
 
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
 import game.objects.mechanics.Gravitable;
 import game.objects.mechanics.Strikable;
+import game.objects.mechanics.Damageable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
 
 public class Monkey extends GravitableEnemy implements Gravitable{
 
-	private static final double MOB_RANGE_DMG = 5;	//mob range damage
-	private static final double MOB_DMG = 0;	//mob power
-	
+	private static final double MOB_RANGE_DMG_INCREMENT = 5;	//mob range damage
+	private static final double MOB_DMG_INCREMENT = 0;		//mob power
+
 	private static final double MOB_HP_INCREMENT = 0;
 
-	private static final int IMAGE_RATE = 20;	//frames per image
+	private static final int IMAGE_RATE = 15;		//frames per image
 
 	private static String GRAPHIC= "monkey";
+
 
 	//motion attributes
 	private int imgIndex = 0;
@@ -28,10 +29,15 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 
 
 
+
+
 	public Monkey(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
 		super(x, y, id, graphicImage, width, height, MOB_HP_INCREMENT, controller);
 		initGraphics(graphicImage);
 	}
+
+
+
 
 
 	/**
@@ -46,35 +52,56 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 		setImage(getImages().get(0));
 
 	}
-	
+
+
+
+
 
 	@Override
 	public double getDMG() {
-		double base = BASE_DMG + MOB_DMG;
-		double range = RANGE_DMG + MOB_RANGE_DMG;
+		double base = BASE_DMG + MOB_DMG_INCREMENT;
+		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
 		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
+
+
+
 	@Override
 	public void takeDMG(Strikable s) {
-		setHealPoints(getHealPoints()-s.getDMG());
-		if(getHealPoints()<0) {
-			
+		if(getHealPoints()>0) {
+			setHealPoints(getHealPoints()-s.getDMG());
+			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
+		}else {
+			getController().destroyEntity(this);
+			dropItem();
+			//TODO fade animation
 		}
 	}
+
+
+
 
 
 	@Override
 	public void update() {
 		sufferGravityForce();
-		
+
 		if(isLeft())
 			moveLeft();
 		else
 			moveRigth();
 		motion();
+
+		if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+			((Damageable)getController().getPlayer()).takeDMG(this);
+			beginCoolDown();
+		}
 	}
+
+
+
 
 
 	/**
@@ -104,7 +131,10 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 		}
 	}
 
-	
+
+
+
+
 	/**
 	 * @return the image name
 	 */

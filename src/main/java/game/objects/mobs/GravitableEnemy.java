@@ -12,6 +12,7 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 	private double yVelocity = 0;						
 
 
+
 	
 	
 	public GravitableEnemy(double x, double y, int id, Image graphicImage, double width, double height,double hp, GameController controller) {
@@ -20,6 +21,8 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
 
 
+	
+	
 	@Override
 	public void sufferGravityForce() {
 
@@ -52,7 +55,8 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
 
 
-
+	
+	
 	/**
 	 * @return the yVelocity
 	 */
@@ -61,6 +65,9 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 	}
 
 
+
+	
+	
 	/**
 	 * @param yVelocity the yVelocity to set
 	 */

@@ -1,5 +1,6 @@
 package game.objects.mobs;
 
+import game.algorithms.Algorithm;
 import game.controllers.GameController;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.Strikable;
@@ -12,6 +13,9 @@ public class Bat extends Enemy {
 
 	private static String GRAPHIC= "bat";
 	
+	private static final double MOB_RANGE_DMG_INCREMENT = 0;	//mob range damage
+	private static final double MOB_DMG_INCREMENT = 0;		//mob power
+
 	private static final double MOB_HP_INCREMENT = 0;
 
 	//motion attributes
@@ -79,16 +83,17 @@ public class Bat extends Enemy {
 
 
 
-	@Override
-	public double getDMG() {
-		return getAttackDamage();
-	}
-
 	
 	@Override
 	public void takeDMG(Strikable s) {
-		// TODO Auto-generated method stub
-
+		if(getHealPoints()>0) {
+			setHealPoints(getHealPoints()-s.getDMG());
+			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
+		}else {
+			getController().destroyEntity(this);
+			dropItem();
+			//TODO fade animation
+		}
 	}
 
 	/**
@@ -97,6 +102,19 @@ public class Bat extends Enemy {
 	public static String getGRAPHIC() {
 		return GRAPHIC;
 	}
+	
+	
+	
+	
+	
+
+	@Override
+	public double getDMG() {
+		double base = BASE_DMG + MOB_DMG_INCREMENT;
+		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
+		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
+	}
+	
 	
 	
 	
@@ -125,6 +143,4 @@ public class Bat extends Enemy {
 		}
 		
 	}
-	
-
 }

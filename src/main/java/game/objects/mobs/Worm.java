@@ -1,6 +1,8 @@
 package game.objects.mobs;
 
+import game.algorithms.Algorithm;
 import game.controllers.GameController;
+import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
@@ -8,6 +10,9 @@ import javafx.scene.image.Image;
 public class Worm extends GravitableEnemy{
 
 	private static final int IMAGE_RATE = 20;	//frames per image
+	
+	private static final double MOB_RANGE_DMG_INCREMENT = 0;	//mob range damage
+	private static final double MOB_DMG_INCREMENT = 0;		//mob power
 	
 	private static final double MOB_HP_INCREMENT = 0;
 
@@ -43,16 +48,23 @@ public class Worm extends GravitableEnemy{
 
 	@Override
 	public double getDMG() {
-		// TODO Auto-generated method stub
-		return 0;
+		double base = BASE_DMG + MOB_DMG_INCREMENT;
+		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
+		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
 
 	@Override
 	public void takeDMG(Strikable s) {
-		// TODO Auto-generated method stub
-
+		if(getHealPoints()>0) {
+			setHealPoints(getHealPoints()-s.getDMG());
+			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
+		}else {
+			getController().destroyEntity(this);
+			dropItem();
+			//TODO fade animation
+		}
 	}
 
 
@@ -66,6 +78,11 @@ public class Worm extends GravitableEnemy{
 		else
 			moveRigth();
 		motion();
+		
+		if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+			((Damageable)getController().getPlayer()).takeDMG(this);
+			beginCoolDown();
+		}
 	}
 
 

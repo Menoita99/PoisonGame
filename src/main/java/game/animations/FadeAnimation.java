@@ -20,9 +20,9 @@ public class FadeAnimation extends Thread{
 	private double maxOpcaity;
 
 
-	public FadeAnimation(CanvasObject targetObject, double opacity, int time , int loops, double minOpacity , double maxOpcaity) {
+	public FadeAnimation(CanvasObject targetObject, double startOpacity, int time , int loops, double minOpacity , double maxOpcaity) {
 		this.targetObject = targetObject;
-		this.opacity = opacity>maxOpcaity ? maxOpcaity : opacity;
+		this.opacity = startOpacity > maxOpcaity ? maxOpcaity : startOpacity;
 		this.time = time;
 		this.loops = loops;
 		this.minOpacity = minOpacity;

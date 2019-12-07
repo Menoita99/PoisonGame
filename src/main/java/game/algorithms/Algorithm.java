@@ -32,8 +32,8 @@ public class Algorithm {
 	}
 
 	// mob attack timer
-	public static double triangle () {
-		return Math.sqrt(25*Math.random())+7;
+	public static double triangle () { 
+		return Math.sqrt(25*Math.random())+7;		//in seconds
 	}
 
 	public static double gaussian () {
