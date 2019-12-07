@@ -2,13 +2,21 @@ package game.objects.mobs;
 
 
 
+import java.lang.ModuleLayer.Controller;
+
+import game.algorithms.Algorithm;
 import game.controllers.GameController;
-import game.objects.Gravitable;
-import game.objects.Strikable;
+import game.objects.mechanics.Gravitable;
+import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
 
 public class Monkey extends GravitableEnemy implements Gravitable{
+
+	private static final double MOB_RANGE_DMG = 5;	//mob range damage
+	private static final double MOB_DMG = 0;	//mob power
+	
+	private static final double MOB_HP_INCREMENT = 0;
 
 	private static final int IMAGE_RATE = 20;	//frames per image
 
@@ -21,7 +29,7 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 
 
 	public Monkey(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
-		super(x, y, id, graphicImage, width, height, controller);
+		super(x, y, id, graphicImage, width, height, MOB_HP_INCREMENT, controller);
 		initGraphics(graphicImage);
 	}
 
@@ -42,15 +50,18 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 
 	@Override
 	public double getDMG() {
-		// TODO Auto-generated method stub
-		return 0;
+		double base = BASE_DMG + MOB_DMG;
+		double range = RANGE_DMG + MOB_RANGE_DMG;
+		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
 	@Override
 	public void takeDMG(Strikable s) {
-		// TODO Auto-generated method stub
-		
+		setHealPoints(getHealPoints()-s.getDMG());
+		if(getHealPoints()<0) {
+			
+		}
 	}
 
 

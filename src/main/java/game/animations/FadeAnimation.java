@@ -1,7 +1,7 @@
 package game.animations;
 
 
-import game.objects.CanvasObject;
+import game.objects.mechanics.CanvasObject;
 
 /**
  * This class represents an fade transition

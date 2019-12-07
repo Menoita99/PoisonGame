@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.mechanics;
 
 public interface Gravitable {
 

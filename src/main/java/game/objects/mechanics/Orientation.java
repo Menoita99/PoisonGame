@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.mechanics;
 
 import javafx.geometry.Point2D;
 

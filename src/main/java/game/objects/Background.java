@@ -1,6 +1,7 @@
 package game.objects;
 
 import game.controls.Camera;
+import game.objects.mechanics.CanvasObject;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 

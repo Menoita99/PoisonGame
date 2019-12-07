@@ -1,6 +1,7 @@
 package game.objects;
 
 import game.controllers.GameController;
+import game.objects.mechanics.CanvasObject;
 import javafx.scene.image.Image;
 
 public class Portal extends CanvasObject {

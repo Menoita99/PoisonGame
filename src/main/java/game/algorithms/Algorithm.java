@@ -14,6 +14,8 @@ public class Algorithm {
 	}
 
 	// 50% Common out-1 // 30% Rare out-2 // 15% Epic out-3 // 5% Legendary out-4 //
+	
+	//Usa o enumerado rarity
 	public static int randDropClass () {
 		double u = Math.random();
 		if (u <= 0.5) return 1;

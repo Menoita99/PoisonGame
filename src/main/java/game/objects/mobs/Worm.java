@@ -1,13 +1,15 @@
 package game.objects.mobs;
 
 import game.controllers.GameController;
-import game.objects.Strikable;
+import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
 
 public class Worm extends GravitableEnemy{
 
 	private static final int IMAGE_RATE = 20;	//frames per image
+	
+	private static final double MOB_HP_INCREMENT = 0;
 
 	private static String GRAPHIC= "worm";
 
@@ -18,7 +20,7 @@ public class Worm extends GravitableEnemy{
 
 
 	public Worm(double x, double y, int id, javafx.scene.image.Image graphicImage, double width, double height,GameController controller) {
-		super(x, y, id, graphicImage, width, height, controller);
+		super(x, y, id, graphicImage, width, height,MOB_HP_INCREMENT, controller);
 		initGraphics(graphicImage);
 	}
 

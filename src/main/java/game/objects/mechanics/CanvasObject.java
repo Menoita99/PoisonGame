@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.mechanics;
 
 
 import javafx.beans.property.DoubleProperty;

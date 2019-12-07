@@ -3,11 +3,12 @@ package game.objects.mobs;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.algorithms.Algorithm;
 import game.controllers.GameController;
-import game.objects.CanvasObject;
-import game.objects.Damageable;
-import game.objects.Movable;
-import game.objects.Strikable;
+import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Damageable;
+import game.objects.mechanics.Movable;
+import game.objects.mechanics.Strikable;
 import javafx.scene.image.Image;
 
 public abstract class Enemy extends Movable implements Strikable, Damageable {
@@ -24,15 +25,21 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	private double attackDamage;						//this must be set by our random algorithm	
 		
 	private GameController controller;	
-
+	
+	public static final double BASE_DMG = 25.0;
+	public static final double RANGE_DMG = 5;	
+	
+	private static final double BASE_HP = 50;
+	private static final double HP_RATIO = 0.20;
 	
 	
-	
-	
-	
-	public Enemy(double x, double y, int id, Image graphicImage, double width, double height,GameController controller) {
+	public Enemy(double x, double y, int id, Image graphicImage, double width, double height,double hp, GameController controller) {
 		super(x, y, id, graphicImage, width, height, LAYER, controller.getCurrentLevelWidth());
 		this.controller = controller;
+		
+		double hpMedia = Math.max(BASE_HP+hp,0);
+		double hpRange = hpMedia * HP_RATIO;
+		healPoints = Algorithm.normal(hpMedia, Math.sqrt(hpRange), hpMedia-hpRange, hpMedia+hpRange);
 	}
 	
 	

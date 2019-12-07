@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.controllers.GameController;
+import game.objects.mechanics.CanvasObject;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
 

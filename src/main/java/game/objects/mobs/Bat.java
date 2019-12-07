@@ -1,8 +1,8 @@
 package game.objects.mobs;
 
 import game.controllers.GameController;
-import game.objects.CanvasObject;
-import game.objects.Strikable;
+import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
 
@@ -11,6 +11,8 @@ public class Bat extends Enemy {
 	private static final int IMAGE_RATE = 5;	//frames per image
 
 	private static String GRAPHIC= "bat";
+	
+	private static final double MOB_HP_INCREMENT = 0;
 
 	//motion attributes
 	private int imgIndex = 0;
@@ -18,8 +20,8 @@ public class Bat extends Enemy {
 	
 	
 
-	public Bat(double x, double y, int id, Image graphicImage, double width, double height,GameController controller) {
-		super(x, y, id, graphicImage, width, height, controller);
+	public Bat(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
+		super(x, y, id, graphicImage, width, height,MOB_HP_INCREMENT, controller);
 		initGraphics(graphicImage);
 	}
 

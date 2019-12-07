@@ -1,8 +1,8 @@
 package game.objects.mobs;
 
 import game.controllers.GameController;
-import game.objects.CanvasObject;
-import game.objects.Gravitable;
+import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Gravitable;
 import javafx.scene.image.Image;
 
 public abstract class GravitableEnemy extends Enemy implements Gravitable{
@@ -14,8 +14,8 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
 	
 	
-	public GravitableEnemy(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
-		super(x, y, id, graphicImage, width, height, controller);
+	public GravitableEnemy(double x, double y, int id, Image graphicImage, double width, double height,double hp, GameController controller) {
+		super(x, y, id, graphicImage, width, height,hp, controller);
 	}
 
 

@@ -1,6 +1,9 @@
 package game.objects;
 
 import game.controllers.GameController;
+import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Gravitable;
+import game.objects.mechanics.Movable;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 

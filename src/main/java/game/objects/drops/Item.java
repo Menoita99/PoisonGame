@@ -1,9 +1,9 @@
-package game.objects;
-
-import java.util.Timer;
+package game.objects.drops;
 
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
+import game.objects.Player;
+import game.objects.mechanics.CanvasObject;
 import javafx.scene.image.Image;
 
 public class Item extends CanvasObject {

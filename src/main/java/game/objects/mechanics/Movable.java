@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.mechanics;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -8,7 +8,6 @@ public abstract class Movable extends CanvasObject {
 
 	
 	private DoubleProperty levelWidth = new SimpleDoubleProperty();
-	private DoubleProperty levelHeight = new SimpleDoubleProperty();
 	
 	
 	public Movable(double x, double y, int id, Image graphicImage, double width, double height, int layer,DoubleProperty currentLevelWidth) {
@@ -17,25 +16,24 @@ public abstract class Movable extends CanvasObject {
 		levelWidth.bind(currentLevelWidth);
 	}
 
-	//public void moveX();
 	
 	
 	/**
-	 *If x<0 && y< 0 && (x+getWidth())<levelWidth) this will do nothing  
+	 *If x<0 && y< 0 && (x+getWidth())<=levelWidth) this will do nothing  
 	 */
 	@Override
 	public void setPosition(double x, double y){
-		if(x>=0 && y>=0 && (x+getWidth()) < getLevelWidth())   
+		if(x>=0 && y>=0 && (x+getWidth()) <= getLevelWidth())   
 			super.setPosition(x, y);
 	}
 	
 	
 	/**
-	 *If x<0 && (x+getWidth())<levelWidth) this will do nothing  
+	 *If x<0 && (x+getWidth())<=levelWidth) this will do nothing  
 	 */
 	@Override
 	public void setX(double x) {
-		if(x>=0 && (x+getWidth()) < getLevelWidth()) 
+		if(x>=0 && (x+getWidth()) <= getLevelWidth()) 
 			super.setX(x);
 	}
 	
@@ -51,13 +49,6 @@ public abstract class Movable extends CanvasObject {
 	
 	public DoubleProperty getLevelWidthProprety() {
 		return levelWidth;
-	}
-
-	/**
-	 * @return the levelHeight
-	 */
-	public DoubleProperty getLevelHeightProperty() {
-		return levelHeight;
 	}
 	
 	public double getLevelWidth() {

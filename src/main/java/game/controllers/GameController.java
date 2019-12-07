@@ -13,12 +13,12 @@ import java.util.ResourceBundle;
 import game.controls.Camera;
 import game.controls.LevelData;
 import game.objects.Background;
-import game.objects.CanvasObject;
 import game.objects.CheckPoint;
-import game.objects.Item;
 import game.objects.Platform;
 import game.objects.Player;
 import game.objects.Portal;
+import game.objects.drops.Item;
+import game.objects.mechanics.CanvasObject;
 import game.objects.mobs.*;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
@@ -44,8 +44,9 @@ public class GameController implements Controllable, Initializable{
 	private double yFactor=1;
 	private int idCounter = 0;
 
-	private DoubleProperty hellStartHeight   = new SimpleDoubleProperty();
-	private DoubleProperty currentLevelWidth = new SimpleDoubleProperty();
+	private DoubleProperty hellStartHeight    = new SimpleDoubleProperty();
+	private DoubleProperty currentLevelWidth  = new SimpleDoubleProperty();
+	private DoubleProperty currentLevelHeight = new SimpleDoubleProperty();
 
 	private ManagerController manager;								//scene manager
 
@@ -61,7 +62,7 @@ public class GameController implements Controllable, Initializable{
 
 	private Player player;											//Player instance
 
-	private	CheckPoint checkPoint;		//Last checkpoint
+	private	CheckPoint checkPoint;									//Last checkpoint
 
 	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects
 
@@ -113,7 +114,6 @@ public class GameController implements Controllable, Initializable{
 				update();
 			}
 		};
-
 	}
 
 	
@@ -182,7 +182,8 @@ public class GameController implements Controllable, Initializable{
 		String [] data =  LevelData.getInstance().getLevel(level);		//get's level map
 
 		currentLevelWidth.set(data[0].length()*xFactor*BLOCKS_SIZE);	//get's the level width
-
+		currentLevelHeight.set(data.length*xFactor*BLOCKS_SIZE);
+		
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
 				createEntity(data, i, j);
@@ -235,14 +236,14 @@ public class GameController implements Controllable, Initializable{
 					idCounter,graphics.get( Player.GRAPHIC ) , BLOCKS_SIZE, BLOCKS_SIZE,this);
 			objects.add(player);
 
-			camera = new Camera(manager.getScene(),player,currentLevelWidth);						//setting camera
+			camera = new Camera(manager.getScene(),player,currentLevelWidth,currentLevelHeight);	//setting camera
 			return;
 		case '6':	//CheckPoint
 			CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(checkPoint);
 
-			if(this.checkPoint == null) {															//this if's set's the first check point
+			if(this.checkPoint == null) {															//this conditional block sets the first check point
 				((CheckPoint)checkPoint).setActive(true);
 				this.checkPoint = ((CheckPoint)checkPoint);
 				
@@ -254,10 +255,15 @@ public class GameController implements Controllable, Initializable{
 			}
 			
 			return;
-		case '7'://Item
+		case '7':	//Item
 			CanvasObject item = new Item(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(Item.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(item);
+			return;
+		case '8':   //Portal
+			CanvasObject portal = new Portal(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Portal.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(portal);	
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
@@ -344,6 +350,18 @@ public class GameController implements Controllable, Initializable{
 	
 	
 	/**
+	 * @return the currentLevelHeight
+	 */
+	public DoubleProperty getCurrentLevelHeight() {
+		return currentLevelHeight;
+	}
+
+
+
+
+
+
+	/**
 	 * @return the player
 	 */
 	public Player getPlayer() {
@@ -399,5 +417,40 @@ public class GameController implements Controllable, Initializable{
 	 */
 	public CheckPoint getCheckPoint() {
 		return checkPoint;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Removes an entity from game
+	 * @param entity entity to be removed
+	 */
+	public void destroyEntity(CanvasObject entity) {
+		objects.remove(entity);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Adds an entity from game
+	 * @param entity entity to be removed
+	 */
+	public void addEntity(CanvasObject entity) {
+		objects.add(entity);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * get's idCounter already incremented
+	 */
+	public int getNewId() {
+		return idCounter++;
 	}
 }
