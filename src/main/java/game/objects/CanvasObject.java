@@ -33,10 +33,10 @@ public abstract class CanvasObject {
 	 * If image is null this will display a rectangle instead
 	 */
 	public CanvasObject(double x, double y,int id, Image graphicImage ,double width,double height, int layer) {
-		positionXProperty.set(x);
-		positionYProperty.set(y);    
-		this.heightProperty.set(height);
-		this.widthProperty.set(width);
+		positionXProperty.setValue(x);
+		positionYProperty.setValue(y);    
+		this.heightProperty.setValue(height);
+		this.widthProperty.setValue(width);
 		this.image = graphicImage;
 		this.id = id;
 		this.layer = layer;
@@ -101,16 +101,16 @@ public abstract class CanvasObject {
 	}
 
 	public void setPosition(double x, double y){
-		positionXProperty.set(x);
-		positionYProperty.set(y); 
+		positionXProperty.setValue(x);
+		positionYProperty.setValue(y); 
 	}
 
 	public void setX(double x) {
-		positionXProperty.set(x);
+		positionXProperty.setValue(x);
 	}
 
 	public void setY(double y) {
-		positionYProperty.set(y);
+		positionYProperty.setValue(y);
 	}
 
 	public int getId() {
@@ -150,7 +150,7 @@ public abstract class CanvasObject {
 	}
 
 	public void setWidth(double width) {
-		this.widthProperty.set(width);
+		this.widthProperty.setValue(width);
 	}
 
 	public double getHeight() {
@@ -158,7 +158,7 @@ public abstract class CanvasObject {
 	}
 
 	public void setHeight(double height) {
-		this.heightProperty.set(height);
+		this.heightProperty.setValue(height);
 	}
 
 	public int getLayer() {
