@@ -30,8 +30,14 @@ public class Camera {
 		
 		initListeners();
 	}
+
+
 	
 	
+	
+	/**
+	 * This method initialise the object listeners. When object moves the camera follow
+	 */
 	private void initListeners() {
 		targetObject.getPositionXProperty().addListener((obs, old, newValue) -> {		//focus object listener on X axis
 			double newPositionX = newValue.doubleValue();
@@ -47,7 +53,7 @@ public class Camera {
 			double height = viewPort.getHeight();
 
 			if ((newPositionY > 4*(height/5) || newPositionY <  4*(height/5)) && newPositionY> 4*(height/5)) {	//TODO add hell height
-				viewPort.setLayoutY((newPositionY - 4*(height/5)));
+				viewPort.setLayoutY((newPositionY - 3*(height/5)));
 			}
 		});
 		
@@ -65,19 +71,29 @@ public class Camera {
 			double newPositionY = targetObject.getY();
 			double height = newValue.doubleValue();
 
-			if ((newPositionY > 4*(height/5) || newPositionY <  4*(height/5)) && newPositionY> 4*(height/5)) {	//TODO add hell height
-				viewPort.setLayoutY((newPositionY - 4*(height/5)));
+			if ((newPositionY > 3*(height/5) || newPositionY <  3*(height/5)) && newPositionY> 3*(height/5)) {	//TODO add hell height
+				viewPort.setLayoutY((newPositionY - 3*(height/5)));
 			}
 		});
 		
 	}
 
 
+	
+	
+	
+	/**
+	 * @return returns the view port
+	 */
 	public Rectangle getViewPort() {
 		return viewPort;
 	}
 
 
+	
+	
+	
+	
 	/**
 	 * @return the maxWidth
 	 */

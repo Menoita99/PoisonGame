@@ -18,7 +18,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	private boolean directionChanged = false;			//Useful for motion images
 
 	private boolean isLeft = false;						//Useful for motion images
-	private double xVelocity = 1;						//pixel per frame
+	private double xVelocity = 5;						//pixel per frame
 	
 	private double healPoints;							//this must be set by our random algorithm	
 	private double attackDamage;						//this must be set by our random algorithm	

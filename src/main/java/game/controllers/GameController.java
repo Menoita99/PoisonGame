@@ -17,6 +17,7 @@ import game.objects.CanvasObject;
 import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
+import game.objects.Portal;
 import game.objects.mobs.*;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
@@ -34,14 +35,14 @@ public class GameController implements Controllable, Initializable{
 
 	private static final int UPDATE_DISTANCE = 200;
 	private static final String GRAPHIC_PATH = "src/main/resources/images";
-//	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
-//	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
+	//	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
+	//	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
 	private static final int LAYERS = 5;
 	private static final int BLOCKS_SIZE = 30;	
 	private double xFactor=1;
 	private double yFactor=1;
 	private int idCounter = 0;
-	
+
 	private DoubleProperty hellStartHeight   = new SimpleDoubleProperty();
 	private DoubleProperty currentLevelWidth = new SimpleDoubleProperty();
 
@@ -56,11 +57,11 @@ public class GameController implements Controllable, Initializable{
 	private AnimationTimer gameLoop;								//loop
 
 	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
-	
+
 	private Player player;											//Player instance
 
-	private	List<CheckPoint> checkPoints = new ArrayList<>();		//checkpoints
-	
+	private	CheckPoint checkPoint;		//Last checkpoint
+
 	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects
 
 	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
@@ -78,8 +79,11 @@ public class GameController implements Controllable, Initializable{
 	 *4- this layer can be for future stuff or can be for display information as player heal
 	 */
 
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Set's the manager controller
 	 */
@@ -88,9 +92,11 @@ public class GameController implements Controllable, Initializable{
 		manager = mc;
 	}
 
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * When the scene is load is the manager controller JavaFX call this method
 	 * This must be used to initialise objects
@@ -109,7 +115,11 @@ public class GameController implements Controllable, Initializable{
 
 	}
 
-
+	
+	
+	
+	
+	
 	/**
 	 * Method called 60 times per second
 	 * This is the game loop
@@ -120,23 +130,25 @@ public class GameController implements Controllable, Initializable{
 			c.getGraphicsContext2D().clearRect(0, 0, c.getWidth(), c.getHeight());		//clear canvas
 
 		}
-		
+
 		for (CanvasObject sprite : objects) {
 			Rectangle viewPort = camera.getViewPort();
 
 			if(viewPort.getBoundsInParent().intersects(sprite.getBoundary()) || sprite.getLayer()==0) {	//this renders background(layer 0) and objects that are in viewPort
 				GraphicsContext gc = canvas.get(sprite.getLayer()).getGraphicsContext2D();
 				sprite.render(gc,viewPort.getLayoutX(),viewPort.getLayoutY());			//draw canvas
-				
+
 			}else if(viewPort.getBoundsInParent().intersects(sprite.getX()-UPDATE_DISTANCE,sprite.getY()-UPDATE_DISTANCE,
-															 sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
-					sprite.update();
+					sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
+				sprite.update();
 		}
 	}
 
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Loads images to a map
 	 */
@@ -155,18 +167,19 @@ public class GameController implements Controllable, Initializable{
 		}
 	}
 
-
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Create objects giving the bit field
 	 */
 	private void loadField() {
 		int level = (int)manager.getProperty("level");					//get's level
-			
+
 		String [] data =  LevelData.getInstance().getLevel(level);		//get's level map
-		
+
 		currentLevelWidth.set(data[0].length()*xFactor*BLOCKS_SIZE);	//get's the level width
 
 		for (int i = 0; i < data.length; i++)  			
@@ -178,12 +191,14 @@ public class GameController implements Controllable, Initializable{
 		idCounter++;
 	}
 
-
-
+	
+	
+	
 	
 	
 	/**
 	 *Creates CanvasObjects giving the key Code 
+	 *this is a CanvasObject factory
 	 */
 	private void createEntitie(String[] data, int i, int j) {
 		idCounter++;
@@ -214,35 +229,51 @@ public class GameController implements Controllable, Initializable{
 					graphics.get(Worm.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(worm);	
 			return;
-		case '5'://Player
+		case '5':	//Player
 			player =  new Player(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, 
-									idCounter,graphics.get( Player.GRAPHIC ) , BLOCKS_SIZE, BLOCKS_SIZE,this);
+					idCounter,graphics.get( Player.GRAPHIC ) , BLOCKS_SIZE, BLOCKS_SIZE,this);
 			objects.add(player);
-			
+
 			camera = new Camera(manager.getScene(),player,currentLevelWidth);						//setting camera
 			return;
-		case '6'://CheckPoint
+		case '6':	//CheckPoint
 			CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(checkPoint);
+
+			if(this.checkPoint == null) {															//this if's set's the first check point
+				((CheckPoint)checkPoint).setActive(true);
+				this.checkPoint = ((CheckPoint)checkPoint);
+				
+			}else if(this.checkPoint.getX() > checkPoint.getX()){
+				
+				this.checkPoint.setActive(false);
+				((CheckPoint)checkPoint).setActive(true);
+				this.checkPoint = ((CheckPoint)checkPoint);
+			}
 			
-			if(checkPoints.isEmpty()) ((CheckPoint) checkPoint).setActive(true); 			//To have always one checkpoint active
-			checkPoints.add((CheckPoint) checkPoint);
+			return;
+		case '7':	//Portal
+			CanvasObject portal = new Portal(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Portal.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(portal);
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
 		}
 	}
 
-
 	
-
+	
+	
+	
+	
 	/**
 	 * Initialise Scene listeners and Canvas
 	 */
 	private void initListeners() {
-//		xFactor = manager.getScene().getWidth()/DEFAULT_WIDTH;			//Defines factors 	//	TODO use property 	//discuss with NUNO LOBATO	
-//		yFactor = manager.getScene().getHeight()/DEFAULT_HEIGHT;							//	TODO use property
+		//		xFactor = manager.getScene().getWidth()/DEFAULT_WIDTH;			//Defines factors 	//	TODO use property 	//discuss with NUNO LOBATO	
+		//		yFactor = manager.getScene().getHeight()/DEFAULT_HEIGHT;							//	TODO use property
 
 		manager.getScene().setOnKeyPressed(event -> keys.put(event.getCode(), true));		//add Listeners
 		manager.getScene().setOnKeyReleased(event -> keys.put(event.getCode(), false));
@@ -259,8 +290,11 @@ public class GameController implements Controllable, Initializable{
 		}
 	}
 
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Checks if a key is pressed
 	 */
@@ -268,7 +302,11 @@ public class GameController implements Controllable, Initializable{
 		return keys.getOrDefault(key, false);
 	}
 
-
+	
+	
+	
+	
+	
 	/**
 	 * Returns all canvasObject at given layer 
 	 */
@@ -280,8 +318,11 @@ public class GameController implements Controllable, Initializable{
 		return output;
 	}
 
-
-
+	
+	
+	
+	
+	
 	/**
 	 * @return the currentLevelWidth
 	 */
@@ -289,8 +330,11 @@ public class GameController implements Controllable, Initializable{
 		return currentLevelWidth;
 	}
 
-
-
+	
+	
+	
+	
+	
 	/**
 	 * @return the player
 	 */
@@ -298,9 +342,11 @@ public class GameController implements Controllable, Initializable{
 		return player;
 	}
 
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * @return the hellStartHeight
 	 */
@@ -308,9 +354,11 @@ public class GameController implements Controllable, Initializable{
 		return hellStartHeight;
 	}
 
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 * Starts game loop
 	 */
@@ -320,25 +368,28 @@ public class GameController implements Controllable, Initializable{
 		gameLoop.start();	//Starts gameLoop		
 	}
 
-
-
+	
+	
+	
+	
+	
 	/**
-	 * @return the Check Point with the farthest x 
+	 * Set's the Check Point 
 	 */
-	public CheckPoint getLastActiveCheckPoint() {
-		double maxX = -1;
-		CheckPoint lastcp = null;
-		for (CheckPoint cp : checkPoints) {
-			if(cp.isActive() && cp.getX()> maxX) {
-				lastcp = cp;
-				maxX = cp.getX();
-			}
-		}
-		return lastcp;
+	public void setCheckPoint(CheckPoint cp) {
+		if( checkPoint == null || (cp.isActive() && cp.getX()> checkPoint.getX())) 
+			checkPoint = cp;
 	}
 
+	
+	
+	
+	
 
-
-
-
+	/**
+	 * @return the Check Point 
+	 */
+	public CheckPoint getCheckPoint() {
+		return checkPoint;
+	}
 }
