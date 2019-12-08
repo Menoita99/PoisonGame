@@ -50,7 +50,7 @@ public class Worm extends GravitableEnemy{
 	public double getDMG() {
 		double base = BASE_DMG + MOB_DMG_INCREMENT;
 		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
-		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
+		return Algorithm.normal2(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
@@ -59,7 +59,7 @@ public class Worm extends GravitableEnemy{
 	public void takeDMG(Strikable s) {
 		if(getHealPoints()>0) {
 			setHealPoints(getHealPoints()-s.getDMG());
-			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
+			System.out.println("mob "+this.getClass()+" took "+s.getDMG()+" damage from "+s.getClass());
 		}else {
 			getController().destroyEntity(this);
 			dropItem();
