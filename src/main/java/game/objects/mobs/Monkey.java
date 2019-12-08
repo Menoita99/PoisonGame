@@ -74,6 +74,7 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 			setHealPoints(getHealPoints()-s.getDMG());
 			if(getHealPoints()<=0){
 				getController().destroyEntity(this);
+				dropItem();
 				//TODO fade animation
 			}
 			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
