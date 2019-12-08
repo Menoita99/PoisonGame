@@ -23,6 +23,8 @@ import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mobs.*;
 import javafx.animation.AnimationTimer;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
@@ -35,9 +37,15 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 public class GameController implements Controllable, Initializable{
 
@@ -150,7 +158,7 @@ public class GameController implements Controllable, Initializable{
 					sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
 				sprite.update();
 		}
-		
+
 		if(player.getY()>currentLevelHeight.get())
 			endGame(false);
 	}
@@ -195,7 +203,7 @@ public class GameController implements Controllable, Initializable{
 		currentLevelHeight.set(data.length*xFactor*BLOCKS_SIZE);
 
 		objects.clear();
-		
+
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
 				createEntity(data, i, j);
@@ -313,7 +321,7 @@ public class GameController implements Controllable, Initializable{
 		manager.getScene().setOnKeyReleased(event -> keys.put(event.getCode(), false));
 
 		mainPane.getChildren().clear();
-		
+
 		for (int i = 0; i < LAYERS ; i++) {								//Initialise canvas
 			Canvas c = new Canvas(manager.getScene().getWidth(),manager.getScene().getHeight());
 			canvas.put(i,c);
@@ -383,30 +391,6 @@ public class GameController implements Controllable, Initializable{
 		gameLoop.stop();
 		//		IOManager.getIntance.saveProgress()
 		displayEndGameAnimation(won);
-	}
-
-
-
-
-
-
-	/**
-	 * End Game Animation
-	 */
-	private void displayEndGameAnimation(boolean won) {
-		VBox endPane = new VBox();
-		endPane.setLayoutX(mainPane.getWidth()/2);
-		endPane.setLayoutY(mainPane.getHeight()/2);
-		
-		Label label = new Label(won ? "WIN" : "LOSE");
-		label.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-font-size: 50px;");
-		label.setTextFill(Color.WHITE);
-		
-		Button lvlMenuButton = new Button("Return to main menu");
-		lvlMenuButton.setOnAction((evt) -> manager.setRoot("levelMenuScene") );
-		
-		endPane.getChildren().addAll(label,lvlMenuButton);
-		mainPane.getChildren().add(endPane);
 	}
 
 
@@ -533,5 +517,104 @@ public class GameController implements Controllable, Initializable{
 	 */
 	public Image getGraphic(String graphic) {
 		return graphics.get(graphic);
+	}
+
+
+
+
+
+
+	/**
+	 * End Game Animation
+	 */
+	private void displayEndGameAnimation(boolean won) {
+		manager.setResizable(false);
+		
+		double sceneWidth = manager.getScene().getWidth();
+		double sceneHeight = manager.getScene().getHeight();
+		
+		AnchorPane anchor = new AnchorPane();
+		anchor.setMinSize(sceneWidth, sceneHeight);
+		
+		AnchorPane topPane = new AnchorPane();
+		topPane.setPrefSize(sceneWidth,sceneHeight/2);
+		topPane.setMinSize(sceneWidth,sceneHeight/2);
+		topPane.setMaxSize(sceneWidth,sceneHeight/2);
+		topPane.setStyle("-fx-background-color:#34baeb");
+		topPane.setLayoutX(0);
+		topPane.setLayoutY(-sceneHeight/2 );
+		
+		
+		AnchorPane botPane = new AnchorPane();
+		botPane.setPrefSize(sceneWidth,sceneHeight/2);
+		botPane.setMinSize(sceneWidth,sceneHeight/2);
+		botPane.setMaxSize(sceneWidth,sceneHeight/2);
+		botPane.setStyle("-fx-background-color:#c2c4c4;");
+		botPane.setLayoutX(0);
+		botPane.setLayoutY(sceneHeight);
+		
+		anchor.getChildren().addAll(botPane,topPane);
+		
+		mainPane.setMaxHeight(sceneHeight);
+		mainPane.getChildren().add(anchor);
+		
+		TranslateTransition translationTopToBot = new TranslateTransition();
+		translationTopToBot.setNode(topPane);
+		translationTopToBot.setFromY(0);
+		translationTopToBot.setToY(sceneHeight/2);
+		translationTopToBot.setDuration(Duration.millis(3000));
+		translationTopToBot.setAutoReverse(false);
+		
+		TranslateTransition translationBotToTop = new TranslateTransition();
+		translationBotToTop.setNode(botPane);
+		translationBotToTop.setFromY(0);
+		translationBotToTop.setToY(-sceneHeight/2);
+		translationBotToTop.setDuration(Duration.millis(3000));
+		translationBotToTop.setAutoReverse(false);
+		
+		
+		ParallelTransition p = new ParallelTransition(translationBotToTop,translationTopToBot);
+		p.play();
+		
+		
+		p.setOnFinished((evt) -> {
+			
+			HBox hb = new HBox();
+
+			Region hbleft = new Region();
+			Region hbright = new Region();
+
+			Region vbup = new Region();
+			vbup.setPrefSize(250, 160);
+
+			Region vbdown = new Region();
+
+			VBox.setVgrow(hbleft, Priority.ALWAYS);
+			VBox.setVgrow(hbright, Priority.ALWAYS);
+
+			HBox.setHgrow(hbleft, Priority.ALWAYS);
+			HBox.setHgrow(hbright, Priority.ALWAYS);
+
+			VBox endPane = new VBox();
+			endPane.setMinWidth(210);
+
+			Label label = new Label(won ? "WIN" : "LOSE");
+			label.setTextFill(Color.WHITE);
+			label.setMinWidth(210);
+			label.setTextAlignment(TextAlignment.CENTER);
+			label.setFont(Font.font(135));
+
+			Button lvlMenuButton = new Button("Return to main menu");
+			lvlMenuButton.setOnAction((evt1) ->{ 
+				mainPane.setMaxHeight(manager.getScreenSize().getHeight());
+				manager.setRoot("levelMenuScene");
+				manager.setResizable(true);
+			});
+
+			hb.getChildren().addAll(hbleft,endPane,hbright);
+			endPane.getChildren().addAll(vbup,label,lvlMenuButton,vbdown);
+
+			mainPane.getChildren().add(hb);
+		});
 	}
 }
