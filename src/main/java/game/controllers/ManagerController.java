@@ -6,9 +6,11 @@ import java.util.Map;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class ManagerController extends Application {
@@ -115,13 +117,37 @@ public class ManagerController extends Application {
 		
 		scene = new Scene(root, WIDTH, HEIGHT);	//set scenes
 		
-		//window.setResizable(false);
 		window.setTitle("Poison");
 		window.setScene(scene);
 		window.show();						//Displays scene
 	}
 
+	
+	
+	
+	
+	/**
+	 * Set's resizable property of window
+	 */
+	public void setResizable(boolean flag) {
+		window.setResizable(flag);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * @return returns a rectangle that represents the screen
+	 */
+	public Rectangle2D getScreenSize() {
+		return Screen.getPrimary().getBounds();
+	}
+	
+	
+	
 
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
