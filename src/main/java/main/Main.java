@@ -1,4 +1,5 @@
 package main;
+import game.algorithms.Algorithm;
 import game.controllers.ManagerController;
 
 public class Main {

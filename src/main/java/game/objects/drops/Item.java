@@ -9,9 +9,8 @@ import javafx.scene.image.Image;
 public class Item extends CanvasObject {
 
 	private static final long buffTimer = 10 * 1000; //milliseconds
-	private boolean dropped = false;
 
-	private String type;
+	private Rarity rarity;
 
 	public static final String GRAPHIC = "item";
 
@@ -23,7 +22,7 @@ public class Item extends CanvasObject {
 	public Item(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
 		super(x, y, id, graphicImage, width, height, LAYER);
 		this.gameController = controller;
-		this.type = getDropType();
+		this.rarity = getDropType();
 				
 	}
 
@@ -32,49 +31,108 @@ public class Item extends CanvasObject {
 	 * This method uses Algorithm randDropClass method that returns the drop type
 	 * @return returns the drop type
 	 */
-	private String getDropType() {
-		Algorithm.randDropClass(); 	//sugestão usar o output deste metodo para o applyBuff
-		return "jump";
+	private Rarity getDropType() {
+		return Algorithm.randDropClass();
 	}
 
 
 
 	@Override
 	public void update() {
-		if (!dropped) checkIfDropping();
+		checkIfDropping();
 	}
 
+	
+	/**
+	 * Checks if player is colliding with the item (picking it up) and applies buff to player (random, depending on rarity)
+	 */
 	public void checkIfDropping() {
-		for (CanvasObject entity : gameController.getObjectsAtLayer(Player.getPlayerLayer()))
-			if (entity instanceof Player && entity.intersects(this) && !((Player) entity).isBuffed()) {
-				dropped=true;
-				applyBuff((Player) entity);
-				gameController.destroyEntity(this);
+		if (gameController.getPlayer().intersects(this) && !gameController.getPlayer().isBuffed()) {
+			switch (rarity) { 	
+			case COMMON:
+				applyBuffCOMMON(gameController.getPlayer());
+				break;
+			case RARE:
+				applyBuffRARE(gameController.getPlayer());
+				break;
+			case EPIC:
+				applyBuffEPIC(gameController.getPlayer());
+				break;
+			case LEGENDARY:
+				applyBuffLEGENDARY(gameController.getPlayer());
+				break;
 			}
+			gameController.destroyEntity(this);
+		}
 	}
 
 
-	public void applyBuff(Player player) {
+	public void applyBuffCOMMON(Player player) {
 		
-		switch (type) { 	
-		case "hp": //hp
-			player.setHP( player.getHP() + 25 );
-			if (player.getHP() > 100) player.setHP( 100 );
+		int specificBuff = Algorithm.randUniform(1);
+		
+		switch (specificBuff) { 	
+		case 1: //hp
+			healthBuff(player);
 			break;
-		case "speed": //speed
+		}
+	}
+	
+	public void applyBuffRARE(Player player) {
+		
+		int a = Algorithm.randUniform(2);
+		
+		switch (a) { 	
+		case 1: //speed
 			speedBuff(player);
 			break;
-		case "jump": //jump
+		case 2: //jump
 			jumpBuff(player);
+			break;
+		}
+	}
+	
+	public void applyBuffEPIC(Player player) {
+		
+		int a = Algorithm.randUniform(1);
+		
+		switch (a) { 	
+		case 1: //hp
+			healthBuff(player);
+			break;
+		}
+	}
+	
+	public void applyBuffLEGENDARY(Player player) {
+		
+		int a = Algorithm.randUniform(1);
+		
+		switch (a) { 	
+		case 1: //hp
+			healthBuff(player);
 			break;
 		}
 	}
 
 
+	
 	//BUFFS
 	
 	/**
-	 * Implements the jump buff
+	 * Implements the health buff (healing 25hp)
+	 * @param player 
+	 */
+	private void healthBuff(Player player) {
+		player.setHP( player.getHP() + 25 );
+		if (player.getHP() > 100) player.setHP( 100 );
+		
+		System.out.println("player healed, health is " + player.getHP()); //DEBUGGING
+	}
+	
+	
+	
+	/**
+	 * Implements the jump buff (jump boost 1.5x)
 	 * @param player 
 	 */
 	private void jumpBuff(Player player) {
@@ -93,9 +151,8 @@ public class Item extends CanvasObject {
 
 
 	
-	
 	/**
-	 * Implements the speed buff
+	 * Implements the speed buff (speed boost 2x)
 	 * @param player 
 	 */
 	private void speedBuff(Player player) {
@@ -111,4 +168,5 @@ public class Item extends CanvasObject {
 			player.setBuffed(false);
 		}).start();
 	}
+	
 }

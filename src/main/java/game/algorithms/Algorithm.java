@@ -2,6 +2,8 @@ package game.algorithms;
 
 import org.apache.commons.math3.special.Erf;
 
+import game.objects.drops.Rarity;
+
 public class Algorithm {
 
 	//For n cases return a random n
@@ -16,12 +18,12 @@ public class Algorithm {
 	// 50% Common out-1 // 30% Rare out-2 // 15% Epic out-3 // 5% Legendary out-4 //
 	
 	//Usa o enumerado rarity
-	public static int randDropClass () {
+	public static Rarity randDropClass () {
 		double u = Math.random();
-		if (u <= 0.5) return 1;
-		else if (u <= 0.8) return 2;
-		else if (u <= 0.95) return 3;
-		else return 4;
+		if (u <= Rarity.COMMON.getPercentage()) return Rarity.COMMON;
+		else if (u <= Rarity.COMMON.getPercentage()+Rarity.RARE.getPercentage()) return Rarity.RARE;
+		else if (u <= Rarity.COMMON.getPercentage()+Rarity.RARE.getPercentage()+Rarity.EPIC.getPercentage()) return Rarity.EPIC;
+		else return Rarity.LEGENDARY;
 	}
 
 	// 70% Normal out-1 // 30% Strong out-2 //

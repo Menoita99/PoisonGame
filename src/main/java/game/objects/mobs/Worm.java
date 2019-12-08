@@ -56,7 +56,7 @@ public class Worm extends GravitableEnemy{
 	public double getDMG() {
 		double base = BASE_DMG + MOB_DMG_INCREMENT;
 		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
-		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
+		return Algorithm.normal2(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
