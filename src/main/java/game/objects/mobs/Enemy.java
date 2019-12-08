@@ -91,8 +91,8 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		setX(getX() + 1);			//move 1 pixel
 	}
 
-	
-	
+
+
 	
 	
 	/**
@@ -135,7 +135,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 			new Thread (() ->{
 				try {
 					double time = Algorithm.triangle();
-					System.out.println("cooldown time-> " + time);
+					System.out.println("cooldown time-> " + time +" mob "+this.getClass());
 					Thread.sleep((long)time*1000);
 					inCooldown = false;
 				} catch (InterruptedException e) { e.printStackTrace(); }

@@ -24,6 +24,8 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	public Worm(double x, double y, int id, javafx.scene.image.Image graphicImage, double width, double height,GameController controller) {
 		super(x, y, id, graphicImage, width, height,MOB_HP_INCREMENT, controller);
 		initGraphics(graphicImage);
@@ -31,6 +33,8 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	/**
 	 * fills images list
 	 */
@@ -46,6 +50,8 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	@Override
 	public double getDMG() {
 		double base = BASE_DMG + MOB_DMG_INCREMENT;
@@ -55,20 +61,24 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	@Override
 	public void takeDMG(Strikable s) {
 		if(getHealPoints()>0) {
 			setHealPoints(getHealPoints()-s.getDMG());
+			if(getHealPoints()<=0){
+				getController().destroyEntity(this);
+				//TODO fade animation
+			}
 			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
-		}else {
-			getController().destroyEntity(this);
-			dropItem();
-			//TODO fade animation
 		}
 	}
 
 
 
+	
+	
 	@Override
 	public void update() {
 		sufferGravityForce();
@@ -87,6 +97,8 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	/**
 	 * This method changes images with a frame rate
 	 * This is what gives the idea of movement
@@ -117,6 +129,8 @@ public class Worm extends GravitableEnemy{
 
 
 
+	
+	
 	/**
 	 * @return the image name
 	 */

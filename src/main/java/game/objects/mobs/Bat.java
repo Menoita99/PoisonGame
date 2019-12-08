@@ -2,7 +2,7 @@ package game.objects.mobs;
 
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
-import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
@@ -11,7 +11,7 @@ public class Bat extends Enemy {
 
 	private static final int IMAGE_RATE = 5;	//frames per image
 
-	private static String GRAPHIC= "bat";
+	public static String GRAPHIC= "bat";
 	
 	private static final double MOB_RANGE_DMG_INCREMENT = 0;	//mob range damage
 	private static final double MOB_DMG_INCREMENT = 0;		//mob power
@@ -54,6 +54,11 @@ public class Bat extends Enemy {
 			moveRigth();
 		motion();
 		
+		if(!isInCooldown()) {
+			getController().addEntity(new BatAcidlAttack(getX(), getY()+getHeight()+1, getController()));
+			beginCoolDown();
+		}
+		
 	}
 
 
@@ -88,33 +93,31 @@ public class Bat extends Enemy {
 	public void takeDMG(Strikable s) {
 		if(getHealPoints()>0) {
 			setHealPoints(getHealPoints()-s.getDMG());
+			if(getHealPoints()<=0){
+				getController().destroyEntity(this);
+				//TODO fade animation
+			}
 			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
-		}else {
-			getController().destroyEntity(this);
-			dropItem();
-			//TODO fade animation
 		}
 	}
 
-	/**
-	 * @return the GRAPHIC
-	 */
-	public static String getGRAPHIC() {
-		return GRAPHIC;
-	}
-	
-	
-	
-	
-	
 
+
+	
+	
 	@Override
 	public double getDMG() {
 		double base = BASE_DMG + MOB_DMG_INCREMENT;
 		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
 		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
 	}
+
+
 	
+	
+	
+
+
 	
 	
 	
@@ -122,24 +125,86 @@ public class Bat extends Enemy {
 	/**
 	 * Class that represents the bat special attack
 	 */
-	private class batSpecialAttack extends CanvasObject implements Strikable{
-
-
-		public batSpecialAttack(double x, double y, int id, Image graphicImage, double width, double height,int layer) {
-			super(x, y, id, graphicImage, width, height, layer);
-			// TODO Auto-generated constructor stub
+	private class BatAcidlAttack extends GravitableEnemy{
+		
+		@SuppressWarnings("static-access")
+		public BatAcidlAttack(double x, double y,GameController controller) {
+			super(x, y, controller.getNewId(), controller.getGraphic("acid"), controller.BLOCKS_SIZE/2, controller.BLOCKS_SIZE/3,-30, controller);
+			initAttackGraphics(getImage());
+			
+			new Thread (() ->{
+				try {
+					Thread.sleep(5*1000);
+					getController().destroyEntity(this);
+				} catch (InterruptedException e) { e.printStackTrace(); }
+			}).start();
 		}
 
-		@Override
-		public double getDMG() {
-			//TODO Auto-generated constructor stub
-			return 0;
-		}
 
-		@Override
-		public void update() {
+		
+		
+		
+		
+		private void initAttackGraphics(Image image) {
 			// TODO Auto-generated method stub
 			
+		}
+
+
+		
+		
+		
+		
+		@Override
+		public double getDMG() {
+			double base = BASE_DMG + MOB_DMG_INCREMENT;
+			double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
+			return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
+		}
+
+
+		
+		
+		
+		
+		@Override
+		public void takeDMG(Strikable s) {
+			if(getHealPoints()>0) {
+				setHealPoints(getHealPoints()-s.getDMG());
+				if(getHealPoints()<=0){
+					getController().destroyEntity(this);
+					//TODO fade animation
+				}
+				System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
+			}
+		}
+
+
+		
+		
+		
+		
+		@Override
+		public void motion() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		
+		
+		
+		
+		@Override
+		public void update() {
+			sufferGravityForce();
+			
+			if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+				((Damageable)getController().getPlayer()).takeDMG(this);
+				beginCoolDown();
+			}
+			
+			motion();
 		}
 		
 	}

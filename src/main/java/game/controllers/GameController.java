@@ -208,7 +208,7 @@ public class GameController implements Controllable, Initializable{
 			for (int j = 0; j < data[i].length(); j++)  
 				createEntity(data, i, j);
 
-		Background b = new Background(idCounter, graphics.get(Background.getGRAPHIC()),camera);
+		Background b = new Background(idCounter, graphics.get(Background.getGRAPHIC()),camera,this);
 		objects.add(b);
 		idCounter++;
 	}
@@ -227,7 +227,7 @@ public class GameController implements Controllable, Initializable{
 
 		switch (data[i].charAt(j) ) {
 		case '-':
-			hellStartHeight.set(j*BLOCKS_SIZE);
+			hellStartHeight.set(i*BLOCKS_SIZE);
 			return;
 		case '0':
 			return;
@@ -243,7 +243,7 @@ public class GameController implements Controllable, Initializable{
 			return;
 		case '3':	//Bat enemy
 			CanvasObject bat = new Bat(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(Bat.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
+					graphics.get(Bat.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(bat);	
 			return;
 		case '4':	//Worm enemy
