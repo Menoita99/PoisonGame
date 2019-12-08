@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 
 public class Item extends CanvasObject {
 
-	private static final long buffTimer = 10000; //milliseconds
+	private static final long buffTimer = 10 * 1000; //milliseconds
 	private boolean dropped = false;
 
 	private String type;
@@ -29,7 +29,7 @@ public class Item extends CanvasObject {
 
 
 	/**
-	 * This method uses Algorithm randDropClass method that
+	 * This method uses Algorithm randDropClass method that returns the drop type
 	 * @return returns the drop type
 	 */
 	private String getDropType() {
@@ -55,7 +55,7 @@ public class Item extends CanvasObject {
 
 
 	public void applyBuff(Player player) {
-
+		
 		switch (type) { 	
 		case "hp": //hp
 			player.setHP( player.getHP() + 25 );

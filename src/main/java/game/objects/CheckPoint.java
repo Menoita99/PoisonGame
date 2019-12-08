@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 
 public class CheckPoint extends CanvasObject {
 	
-	private static final int IMAGE_RATE = 20;
+	private static final int IMAGE_RATE = 15;
 	public static final String GRAPHIC = "checkPoint";
 	public static int LAYER = 1;
 	
@@ -32,8 +32,9 @@ public class CheckPoint extends CanvasObject {
 
 	
 	
+	
 	/**
-	 * fills images list
+	 * fills images list to get motion
 	 */
 	private void initGraphics(Image img) {				//graphicImage have this format: [on on off]
 		for (Image i:Cutter.imageCutter(img, 3)) 
@@ -60,13 +61,12 @@ public class CheckPoint extends CanvasObject {
 	 * Makes checkPoint animation
 	 */
 	private void motion() {
-		frameCount = frameCount== IMAGE_RATE*images.size()-1 ? 0 :  frameCount+1; 	//set's frames counter 
+		frameCount = frameCount== IMAGE_RATE*images.size()-1 ? 1 :  frameCount+1; 	//set's frames counter 
 																					//(-1) is to exclude off image
 		if(isActive && frameCount%IMAGE_RATE == 0) {
 			imgIndex = imgIndex == 0 ? 1 : 0;
 			setImage(images.get(imgIndex));
 		}
-			
 	}
 
 

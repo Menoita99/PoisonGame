@@ -110,7 +110,7 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 	 */
 	@Override
 	public void motion() {
-		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 	//count the frames
+		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 1 :  frameCount+1; 	//count the frames
 
 		if(frameCount%IMAGE_RATE == 0 || isDirectionChanged() ) {
 			setDirectionChanged(false);

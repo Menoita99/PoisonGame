@@ -48,8 +48,7 @@ public class Camera {
 			double width = viewPort.getWidth();
 			double layoutXValue = Math.min(Math.max((newPositionX - width/2), 0),maxWidth.get()-width);
 
-			if(viewPort.getX() != layoutXValue)
-				viewPort.setLayoutX(layoutXValue);
+			viewPort.setLayoutX(layoutXValue);
 		});
 
 		targetObject.getPositionYProperty().addListener((obs, old, newValue) -> {		//focus object listener on Y axis
@@ -57,8 +56,7 @@ public class Camera {
 			double height = viewPort.getHeight();
 			double layoutYValue = Math.min(Math.max((newPositionY-(height*yRatio) ), 0),maxHeight.get()-height);
 
-			if(viewPort.getY() != layoutYValue)
-				viewPort.setLayoutY(layoutYValue);
+			viewPort.setLayoutY(layoutYValue);
 		});
 
 		viewPort.widthProperty().addListener((obs, old, newValue) -> {			//when scene resizes this centralise viewPort at the target object
@@ -66,8 +64,7 @@ public class Camera {
 			double width = newValue.doubleValue();
 			double layoutXValue = Math.min(Math.max((newPositionX - width/2), 0),maxWidth.get()-width);
 
-			if(viewPort.getX() != layoutXValue)
-				viewPort.setLayoutX(layoutXValue);
+			viewPort.setLayoutX(layoutXValue);
 		});
 
 
@@ -76,8 +73,7 @@ public class Camera {
 			double height = newValue.doubleValue();
 			double layoutYValue = Math.min(Math.max((newPositionY-(height*yRatio) ), 0),maxHeight.get()-height);
 
-			if(viewPort.getY() != layoutYValue)
-				viewPort.setLayoutY(layoutYValue);
+			viewPort.setLayoutY(layoutYValue);
 		});
 
 	}

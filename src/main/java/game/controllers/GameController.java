@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.controls.Camera;
 import game.controls.LevelData;
@@ -16,6 +17,7 @@ import game.objects.Background;
 import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
+import game.objects.Flag;
 import game.objects.Portal;
 import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
@@ -27,8 +29,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
@@ -53,8 +60,8 @@ public class GameController implements Controllable, Initializable{
 	private Camera camera;											
 
 	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed list
-
 	private	Map<String, Image> graphics = new HashMap<>();			
+	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
 	private AnimationTimer gameLoop;								
 
@@ -64,9 +71,9 @@ public class GameController implements Controllable, Initializable{
 
 	private	CheckPoint checkPoint;									//Last checkpoint
 
-	private	List<CanvasObject> objects = new ArrayList<>();			//Game Objects (render list)
+	private	List<CanvasObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
 
-	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
+
 
 	/*LAYERS STRUCT
 	 *
@@ -81,11 +88,11 @@ public class GameController implements Controllable, Initializable{
 	 *4- this layer can be for future stuff or can be for display information as player heal/damage
 	 */
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Set's the manager controller
 	 */
@@ -94,11 +101,11 @@ public class GameController implements Controllable, Initializable{
 		manager = mc;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * When the scene is load is the manager controller JavaFX call this method
 	 * This must be used to initialise objects
@@ -116,11 +123,11 @@ public class GameController implements Controllable, Initializable{
 		};
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Method called 60 times per second
 	 * This is the game loop
@@ -143,13 +150,16 @@ public class GameController implements Controllable, Initializable{
 					sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
 				sprite.update();
 		}
+		
+		if(player.getY()>currentLevelHeight.get())
+			endGame(false);
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Loads images to a map
 	 */
@@ -168,11 +178,11 @@ public class GameController implements Controllable, Initializable{
 		}
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Create objects giving the bit field
 	 */
@@ -183,6 +193,8 @@ public class GameController implements Controllable, Initializable{
 
 		currentLevelWidth.set(data[0].length()*xFactor*BLOCKS_SIZE);	//get's the level width
 		currentLevelHeight.set(data.length*xFactor*BLOCKS_SIZE);
+
+		objects.clear();
 		
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
@@ -193,11 +205,11 @@ public class GameController implements Controllable, Initializable{
 		idCounter++;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 *Creates CanvasObjects giving the key Code 
 	 *this is a CanvasObject factory
@@ -251,6 +263,11 @@ public class GameController implements Controllable, Initializable{
 					graphics.get(Portal.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(portal);	
 			return;
+		case '9':   //Flag
+			CanvasObject flag = new Flag(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Flag.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(flag);	
+			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
 		}
@@ -258,7 +275,7 @@ public class GameController implements Controllable, Initializable{
 
 
 
-	
+
 
 
 	/**
@@ -271,20 +288,20 @@ public class GameController implements Controllable, Initializable{
 		if(this.checkPoint == null) {															//this conditional block sets the first check point
 			((CheckPoint)checkPoint).setActive(true);
 			this.checkPoint = ((CheckPoint)checkPoint);
-			
+
 		}else if(this.checkPoint.getX() > checkPoint.getX()){
-			
+
 			this.checkPoint.setActive(false);
 			((CheckPoint)checkPoint).setActive(true);
 			this.checkPoint = ((CheckPoint)checkPoint);
 		}
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Initialise Scene listeners and Canvas
 	 */
@@ -295,6 +312,8 @@ public class GameController implements Controllable, Initializable{
 		manager.getScene().setOnKeyPressed(event -> keys.put(event.getCode(), true));		//add Listeners
 		manager.getScene().setOnKeyReleased(event -> keys.put(event.getCode(), false));
 
+		mainPane.getChildren().clear();
+		
 		for (int i = 0; i < LAYERS ; i++) {								//Initialise canvas
 			Canvas c = new Canvas(manager.getScene().getWidth(),manager.getScene().getHeight());
 			canvas.put(i,c);
@@ -307,11 +326,11 @@ public class GameController implements Controllable, Initializable{
 		}
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Checks if a key is pressed
 	 */
@@ -319,11 +338,11 @@ public class GameController implements Controllable, Initializable{
 		return keys.getOrDefault(key, false);
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Returns all canvasObject at given layer 
 	 */
@@ -335,11 +354,66 @@ public class GameController implements Controllable, Initializable{
 		return output;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
+
+	/**
+	 * Starts game loop
+	 */
+	public void start() {
+		initListeners();
+		loadField();		//loads field using graphics
+		gameLoop.start();	//Starts gameLoop		
+	}
+
+
+
+
+
+
+
+	/**
+	 * Ends Level and saves stats
+	 * @param won if won equals true means level was passed with success
+	 */
+	public void endGame(boolean won) {
+		gameLoop.stop();
+		//		IOManager.getIntance.saveProgress()
+		displayEndGameAnimation(won);
+	}
+
+
+
+
+
+
+	/**
+	 * End Game Animation
+	 */
+	private void displayEndGameAnimation(boolean won) {
+		VBox endPane = new VBox();
+		endPane.setLayoutX(mainPane.getWidth()/2);
+		endPane.setLayoutY(mainPane.getHeight()/2);
+		
+		Label label = new Label(won ? "WIN" : "LOSE");
+		label.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-font-size: 50px;");
+		label.setTextFill(Color.WHITE);
+		
+		Button lvlMenuButton = new Button("Return to main menu");
+		lvlMenuButton.setOnAction((evt) -> manager.setRoot("levelMenuScene") );
+		
+		endPane.getChildren().addAll(label,lvlMenuButton);
+		mainPane.getChildren().add(endPane);
+	}
+
+
+
+
+
+
 	public List<CanvasObject> getObjects() {
 		return objects;
 	}
@@ -354,11 +428,11 @@ public class GameController implements Controllable, Initializable{
 		return currentLevelWidth;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * @return the currentLevelHeight
 	 */
@@ -378,11 +452,11 @@ public class GameController implements Controllable, Initializable{
 		return player;
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * @return the hellStartHeight
 	 */
@@ -390,25 +464,10 @@ public class GameController implements Controllable, Initializable{
 		return hellStartHeight;
 	}
 
-	
-	
-	
-	
-	
-	/**
-	 * Starts game loop
-	 */
-	public void start() {
-		initListeners();
-		loadField();		//loads field using graphics
-		gameLoop.start();	//Starts gameLoop		
-	}
 
-	
-	
-	
-	
-	
+
+
+
 	/**
 	 * Set's the Check Point 
 	 */
@@ -417,10 +476,10 @@ public class GameController implements Controllable, Initializable{
 			checkPoint = cp;
 	}
 
-	
-	
-	
-	
+
+
+
+
 
 	/**
 	 * @return the Check Point 
@@ -428,11 +487,11 @@ public class GameController implements Controllable, Initializable{
 	public CheckPoint getCheckPoint() {
 		return checkPoint;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Removes an entity from game
 	 * @param entity entity to be removed
@@ -440,11 +499,11 @@ public class GameController implements Controllable, Initializable{
 	public void destroyEntity(CanvasObject entity) {
 		objects.remove(entity);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Adds an entity from game
 	 * @param entity entity to be removed
@@ -452,11 +511,11 @@ public class GameController implements Controllable, Initializable{
 	public void addEntity(CanvasObject entity) {
 		objects.add(entity);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * get's idCounter already incremented
 	 */

@@ -70,7 +70,7 @@ public class ManagerController extends Application {
 	
 
 	/**
-	 * Return a controller
+	 * Return the controller with the given key
 	 */
 	public Controllable getController(String key) {
 		return controllers.get(key);

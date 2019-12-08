@@ -59,7 +59,7 @@ public class Bat extends Enemy {
 
 	@Override
 	public void motion() {
-		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 0 :  frameCount+1; 	//set's frames counter
+		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 1 :  frameCount+1; 	//set's frames counter
 
 		if(frameCount%IMAGE_RATE == 0 || isDirectionChanged() ) {
 			setDirectionChanged(false);
