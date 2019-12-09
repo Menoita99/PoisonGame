@@ -5,6 +5,7 @@ import game.controllers.GameController;
 import game.objects.Player;
 import game.objects.mechanics.CanvasObject;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Item extends CanvasObject {
 
@@ -42,6 +43,9 @@ public class Item extends CanvasObject {
 		checkIfDropping();
 	}
 
+
+
+	
 	
 	/**
 	 * Checks if player is colliding with the item (picking it up) and applies buff to player (random, depending on rarity)
@@ -67,6 +71,9 @@ public class Item extends CanvasObject {
 	}
 
 
+
+	
+	
 	public void applyBuffCOMMON(Player player) {
 		
 		int specificBuff = Algorithm.randUniform(1);
@@ -77,6 +84,10 @@ public class Item extends CanvasObject {
 			break;
 		}
 	}
+
+
+
+	
 	
 	public void applyBuffRARE(Player player) {
 		
@@ -91,6 +102,10 @@ public class Item extends CanvasObject {
 			break;
 		}
 	}
+
+
+
+	
 	
 	public void applyBuffEPIC(Player player) {
 		
@@ -102,6 +117,10 @@ public class Item extends CanvasObject {
 			break;
 		}
 	}
+
+
+
+	
 	
 	public void applyBuffLEGENDARY(Player player) {
 		
@@ -115,6 +134,8 @@ public class Item extends CanvasObject {
 	}
 
 
+
+	
 	
 	//BUFFS
 	
@@ -125,7 +146,7 @@ public class Item extends CanvasObject {
 	private void healthBuff(Player player) {
 		player.setHP( player.getHP() + 25 );
 		if (player.getHP() > 100) player.setHP( 100 );
-		
+		gameController.writeText(getX(), getY(), 25+"", 1000, Color.GREEN);
 		System.out.println("player healed, health is " + player.getHP()); //DEBUGGING
 	}
 	
@@ -168,5 +189,4 @@ public class Item extends CanvasObject {
 			player.setBuffed(false);
 		}).start();
 	}
-	
 }

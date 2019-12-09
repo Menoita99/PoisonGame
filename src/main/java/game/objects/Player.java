@@ -1,5 +1,6 @@
 package game.objects;
 
+
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
 import game.objects.mechanics.CanvasObject;
@@ -10,6 +11,7 @@ import game.objects.mechanics.Strikable;
 import game.objects.mobs.Enemy;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 
 public class Player extends Movable implements Gravitable, Damageable, Strikable{
 
@@ -34,19 +36,23 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	private boolean canJump = false;
 	
 	private boolean buffed = false;
-	private boolean dead = false;
 
 
 
+	
+	
 	public Player(double x, double y, int id, Image graphicImage, double width, double height, GameController gameController) {
 		super(x, y, id, graphicImage, width, height, LAYER, gameController.getCurrentLevelWidth());
 		this.gameController = gameController;
 	}
 
 
+
+	
+	
 	@Override
 	public void update() {
-		if (hp <= 0) dead = true;
+		if (hp <= 0)  gameController.endGame(false);
 
 		move();
 
@@ -56,9 +62,16 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			yVelocity++;
 		}
 		sufferGravityForce();
+		
+
+		if(getY()>gameController.getCurrentLevelHeight().get())	//ends game;
+			gameController.endGame(false);
 	}
 
 
+
+	
+	
 	//Moving keys
 	private void move() {
 		if (gameController.isPressed(KeyCode.W) || gameController.isPressed(KeyCode.UP) || gameController.isPressed(KeyCode.SPACE) ) {
@@ -74,6 +87,10 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 		}
 	}
 
+
+
+	
+	
 	/**
 	 * This method makes the player jump, not allowing for jumps while airborne
 	 */
@@ -84,6 +101,10 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 		}
 	}
 
+
+
+	
+	
 	/**
 	 * This method moves the player to the right checking for collisions
 	 */
@@ -101,6 +122,9 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	}
 
 
+
+	
+	
 	/**
 	 * This method moves the player to the left checking for collisions
 	 */
@@ -119,7 +143,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-
+	
+	
 	/**
 	 * This method expresses the effect of the force to which the object is subjected
 	 */
@@ -148,6 +173,9 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	}
 
 
+
+	
+	
 	private void attack() {
 		if ( gameController.isPressed(KeyCode.X) || gameController.isPressed(KeyCode.M) ) {
 			if (isLeft) {
@@ -175,63 +203,105 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	public double getHP() {
 		return hp;
 	}
+
+
+
+	
+	
 	public void setHP(double HP) {
 		hp = HP;
 	}
 
 
+
+	
+	
 	public double getDamageMult() {
 		return damageMult;
 	}
+
+
+
+	
+	
 	public void setDamageMult(int DM) {
 		damageMult = DM;
 	}
 
 
+
+	
+	
 	public double getSpeedMult() {
 		return speedMult;
 	}
+
+
+
+	
+	
 	public void setSpeedMult(double d) {
 		speedMult = d;
 	}
 
 
+
+	
+	
 	public double getJumpForce() {
 		return jumpForce;
 	}
 
+
+
+	
+	
 	public void setJumpForce(double d) {
 		jumpForce = d;
 	}
 
 
+
+	
+	
 	public boolean isBuffed() {
 		return buffed;
 	}
 
 
+
+	
+	
 	public void setBuffed(boolean buffed) {
 		this.buffed = buffed;
 	}
 
 
+
+	
+	
 	public static int getPlayerLayer() {
 		return LAYER;
 	}
 
 
+
+	
+	
 	@Override
 	public void takeDMG(Strikable s) {
 		hp = hp - s.getDMG();
 		System.out.println("Player was damaged by "+s.getDMG()+" and the mob was "+ s.getClass() + ". Player hp is " + hp); //DEBUGGING
+		gameController.writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.RED);
 	}
 
 
+
+	
+	
 	@Override
 	public double getDMG() {
 		int damage = (int) (baseDamage*damageMult);
 		return Algorithm.normal2(damage, Math.sqrt(baseRange), damage-baseRange, damage+baseRange);
 	}
-
-
 }

@@ -1,0 +1,5 @@
+.background{
+	-fx-background-image: url('//src//main//resources//images//background.gif');
+    -fx-background-repeat: stretch;
+    -fx-background-color: white;
+}

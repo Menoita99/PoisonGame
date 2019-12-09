@@ -21,6 +21,7 @@ import game.objects.Flag;
 import game.objects.Portal;
 import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
+import game.objects.mechanics.UIObject;
 import game.objects.mobs.*;
 import javafx.animation.AnimationTimer;
 import javafx.animation.ParallelTransition;
@@ -44,6 +45,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
@@ -64,7 +67,6 @@ public class GameController implements Controllable, Initializable{
 	private DoubleProperty currentLevelHeight = new SimpleDoubleProperty();
 
 	private ManagerController manager;								//scene manager
-
 	private Camera camera;											
 
 	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed list
@@ -76,10 +78,9 @@ public class GameController implements Controllable, Initializable{
 	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
 
 	private Player player;											
-
 	private	CheckPoint checkPoint;									//Last checkpoint
 
-	private	List<CanvasObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
+	private	List<UIObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
 
 
 
@@ -93,7 +94,7 @@ public class GameController implements Controllable, Initializable{
 	 *
 	 *3- EFFECTS, e.g: explosion effects
 	 *
-	 *4- this layer can be for future stuff or can be for display information as player heal/damage
+	 *4- PLAYER STATS, DMG
 	 */
 
 
@@ -144,23 +145,29 @@ public class GameController implements Controllable, Initializable{
 		for (int layer : canvas.keySet()) {
 			Canvas  c = canvas.get(layer);	
 			c.getGraphicsContext2D().clearRect(0, 0, c.getWidth(), c.getHeight());		//clear canvas
-
 		}
 
-		for (CanvasObject sprite : objects) {
+		for (UIObject uiObj : objects) {
+			
 			Rectangle viewPort = camera.getViewPort();
 
-			if(viewPort.getBoundsInParent().intersects(sprite.getBoundary()) || sprite.getLayer()==0) {	//this renders background(layer 0) and objects that are in viewPort
-				GraphicsContext gc = canvas.get(sprite.getLayer()).getGraphicsContext2D();
-				sprite.render(gc,viewPort.getLayoutX(),viewPort.getLayoutY());			//draw canvas
-
-			}else if(viewPort.getBoundsInParent().intersects(sprite.getX()-UPDATE_DISTANCE,sprite.getY()-UPDATE_DISTANCE,
-					sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	//this updates objects that are at 100 pixels from view port boundary
-				sprite.update();
+			if(uiObj instanceof CanvasObject) {
+				CanvasObject sprite = (CanvasObject)uiObj;
+			
+				if(viewPort.getBoundsInParent().intersects(sprite.getBoundary()) || sprite.getLayer()==0) {	//this renders background(layer 0) and objects that are in viewPort
+					GraphicsContext gc = canvas.get(sprite.getLayer()).getGraphicsContext2D();
+					sprite.render(gc,viewPort.getLayoutX(),viewPort.getLayoutY());			//draw canvas
+	
+				}else if(viewPort.getBoundsInParent().intersects(sprite.getX()-UPDATE_DISTANCE,sprite.getY()-UPDATE_DISTANCE, 
+						sprite.getWidth()+2*UPDATE_DISTANCE,sprite.getHeight()+2*UPDATE_DISTANCE))	
+					sprite.update();
+				
+			}else {
+				if(viewPort.getBoundsInParent().intersects(uiObj.getX(),uiObj.getY(),uiObj.getWidth(),uiObj.getHeight()))
+					uiObj.render(canvas.get(uiObj.getLayer()).getGraphicsContext2D(), viewPort.getLayoutX(),viewPort.getLayoutY());
+			}
 		}
 
-		if(player.getY()>currentLevelHeight.get())
-			endGame(false);
 	}
 
 
@@ -356,9 +363,10 @@ public class GameController implements Controllable, Initializable{
 	 */
 	public List<CanvasObject> getObjectsAtLayer(int layer){
 		List<CanvasObject> output = new ArrayList<CanvasObject>();
-		for (CanvasObject canvasObject : objects)
-			if(canvasObject.getLayer()== layer)			//verifies if they have the same layer
-				output.add(canvasObject);		
+		for (UIObject canvasObject : objects)
+			if(canvasObject instanceof CanvasObject)
+				if(canvasObject.getLayer()== layer)			//verifies if they have the same layer
+					output.add((CanvasObject)canvasObject);		
 		return output;
 	}
 
@@ -391,15 +399,6 @@ public class GameController implements Controllable, Initializable{
 		gameLoop.stop();
 		//		IOManager.getIntance.saveProgress()
 		displayEndGameAnimation(won);
-	}
-
-
-
-
-
-
-	public List<CanvasObject> getObjects() {
-		return objects;
 	}
 
 
@@ -521,6 +520,71 @@ public class GameController implements Controllable, Initializable{
 
 
 
+	
+	
+	/**
+	 * This method will display a text message at layer 4, at coordinates x, y 
+	 *  with the given colour and will disappear after time milliseconds
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param text text to be displayed
+	 * @param time time in milli 
+	 * @param color text color
+	 */
+	public void writeText(double x, double y, String text, long time,Color color) {
+		Font font = Font.font("Arial Black", FontWeight.BOLD, 14);
+		
+		UIObject obj = new UIObject() {
+			
+			@Override
+			public void render(GraphicsContext gc, double xOffSet, double yOffSet) {
+				gc.setFill(color);
+				gc.setFont(font);
+				gc.fillText(text, getX()-xOffSet, getY()-yOffSet);
+				gc.setFill(Color.BLACK);
+			}
+			
+			@Override
+			public double getY() {
+				return y;
+			}
+			
+			@Override
+			public double getX() {
+				return x;
+			}
+			
+			@Override
+			public double getWidth() {
+				Text t = new Text(text);
+				t.setFont(font);
+				return t.getLayoutBounds().getWidth();
+			}
+			
+			@Override
+			public int getLayer() {
+				return canvas.size()-1;
+			}
+			
+			@Override
+			public double getHeight() {
+				Text t = new Text(text);
+				t.setFont(font);
+				return t.getLayoutBounds().getHeight();
+			}
+		};
+		
+		objects.add(obj);
+		new Thread(() -> {
+			try {
+				Thread.sleep(time);
+			} catch (InterruptedException e) { e.printStackTrace(); }
+			objects.remove(obj);
+		}).start();
+	}
+	
+	
+	
 
 
 

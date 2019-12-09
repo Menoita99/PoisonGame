@@ -15,7 +15,7 @@ import javafx.scene.shape.Rectangle;
  * 
  * @author RuiMenoita
  */
-public abstract class CanvasObject {
+public abstract class CanvasObject implements UIObject{
 
 	private Image image;
 	private double opacity = 1;
@@ -58,6 +58,7 @@ public abstract class CanvasObject {
 	 *Every time this method is called update() is called as well
 
 	 */
+	@Override
 	public void render(GraphicsContext gc, double xOffSet, double yOffSet){
 		update();
 		

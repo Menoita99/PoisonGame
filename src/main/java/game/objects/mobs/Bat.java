@@ -170,14 +170,8 @@ public class Bat extends Enemy {
 		
 		@Override
 		public void takeDMG(Strikable s) {
-			if(getHealPoints()>0) {
-				setHealPoints(getHealPoints()-s.getDMG());
-				if(getHealPoints()<=0){
-					getController().destroyEntity(this);
-					//TODO fade animation
-				}
-				System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
-			}
+			if(s.getDMG()>0)
+				getController().destroyEntity(this);
 		}
 
 
@@ -188,7 +182,6 @@ public class Bat extends Enemy {
 		@Override
 		public void motion() {
 			// TODO Auto-generated method stub
-			
 		}
 
 
@@ -202,7 +195,7 @@ public class Bat extends Enemy {
 			
 			if(getController().getPlayer().intersects(this) && !isInCooldown()) {
 				((Damageable)getController().getPlayer()).takeDMG(this);
-				beginCoolDown();
+				getController().destroyEntity(this);
 			}
 			
 			motion();

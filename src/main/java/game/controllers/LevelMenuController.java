@@ -27,13 +27,23 @@ public class LevelMenuController implements Controllable, Initializable {
 	 * Method called by buttons when pressed
 	 */
 	@FXML
-	void selectLevel(ActionEvent event) {
+	public void selectLevel(ActionEvent event) {
 		int level = Integer.parseInt(((Button)event.getSource()).getText());		//get button level
 		manager.setProperty("level", level);										//Set's global property
 		manager.setRoot("gameScene");												//Set's next scene
 		((GameController)manager.getController("GameController")).start();			//Starts GameController loop
 	}
 
+	
+	/**
+	 * Method called by buttons when pressed
+	 */
+	@FXML
+	public void returnMainMenu(ActionEvent event) {
+		manager.setRoot("mainMenuScene");												//Set's next scene
+	}
+	
+	
 
 	/**
 	 * When the scene is load is the manager controller JavaFX call this method
