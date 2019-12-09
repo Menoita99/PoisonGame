@@ -1,6 +1,9 @@
 package game.objects;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 import game.algorithms.Algorithm;
 import game.controllers.GameController;
 import game.objects.mechanics.CanvasObject;
@@ -8,7 +11,6 @@ import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Gravitable;
 import game.objects.mechanics.Movable;
 import game.objects.mechanics.Strikable;
-import game.objects.mobs.Enemy;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -37,6 +39,7 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	
 	private boolean buffed = false;
 
+	private List<Key> keys = new LinkedList<>();
 
 
 	
@@ -181,14 +184,16 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			if (isLeft) {
 				//play left attack animation
 				for(CanvasObject entity : gameController.getObjectsAtLayer(getLayer()))
-					if(entity.getBoundary().intersects(getX()-getWidth(), getY(), getWidth(), getHeight()) && entity instanceof Enemy)
-						((Damageable) entity).takeDMG(this);
+					if(entity instanceof Damageable && !entity.equals(this))
+						if(entity.getBoundary().intersects(getX()-getWidth(), getY(), getWidth(), getHeight()))
+							((Damageable) entity).takeDMG(this);
 			}
 			else {
 				//play right attack animation
 				for(CanvasObject entity : gameController.getObjectsAtLayer(getLayer()))
-					if(entity.getBoundary().intersects(getX()+getWidth(), getY(), getWidth(), getHeight()) && entity instanceof Enemy)
-						((Damageable) entity).takeDMG(this);
+					if(entity instanceof Damageable && !entity.equals(this))
+						if(entity.getBoundary().intersects(getX()+getWidth(), getY(), getWidth(), getHeight()))
+							((Damageable) entity).takeDMG(this);
 				
 			}
 		}
@@ -304,4 +309,27 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 		int damage = (int) (baseDamage*damageMult);
 		return Algorithm.normal2(damage, Math.sqrt(baseRange), damage-baseRange, damage+baseRange);
 	}
+	
+	
+	
+	
+	/**
+	 * Adds key to player keys
+	 * @param key
+	 */
+	public void addKey(Key key) {
+		keys.add(key);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * gets player keys
+	 */
+	public List<Key> getKeys() {
+		return keys;
+	}
+	
 }

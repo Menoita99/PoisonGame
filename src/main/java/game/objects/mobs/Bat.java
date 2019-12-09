@@ -145,10 +145,15 @@ public class Bat extends Enemy {
 		
 		
 		
-		
-		private void initAttackGraphics(Image image) {
-			// TODO Auto-generated method stub
-			
+		/**
+		 * This method cut's the image and fill's the images list with motion images
+		 * @param img image to be cut in motion images
+		 */
+		private void initAttackGraphics(Image img) {
+			for(Image i:Cutter.imageCutter(img, 2)) 			
+					super.getImages().add(i);
+
+			super.setImage(getImages().get(0));
 		}
 
 
@@ -174,14 +179,17 @@ public class Bat extends Enemy {
 				getController().destroyEntity(this);
 		}
 
-
+		
 		
 		
 		
 		
 		@Override
 		public void motion() {
-			// TODO Auto-generated method stub
+			if(getYVelocity() == 0)
+				super.setImage(super.getImages().get(1));
+			else
+				super.setImage(super.getImages().get(0));
 		}
 
 

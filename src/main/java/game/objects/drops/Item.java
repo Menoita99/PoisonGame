@@ -142,7 +142,7 @@ public class Item extends CanvasObject {
 	/**
 	 * Implements the health buff (healing 25hp)
 	 * @param player 
-	 */
+	 */	
 	private void healthBuff(Player player) {
 		player.setHP( player.getHP() + 25 );
 		if (player.getHP() > 100) player.setHP( 100 );

@@ -18,11 +18,14 @@ import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
 import game.objects.Flag;
+import game.objects.Key;
+import game.objects.Lock;
 import game.objects.Portal;
 import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.UIObject;
 import game.objects.mobs.*;
+import game.objects.ui.HealthBar;
 import javafx.animation.AnimationTimer;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
@@ -264,6 +267,8 @@ public class GameController implements Controllable, Initializable{
 			objects.add(player);
 
 			camera = new Camera(manager.getScene(),player,currentLevelWidth,currentLevelHeight);	//setting camera
+			
+			objects.add(new HealthBar(player, camera.getViewPort()));
 			return;
 		case '6':	//CheckPoint
 			createCheckPoint(i, j);
@@ -282,6 +287,16 @@ public class GameController implements Controllable, Initializable{
 			CanvasObject flag = new Flag(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(Flag.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(flag);	
+			return;
+		case 'a':   //key
+			CanvasObject key = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
+			objects.add(key);	
+			return;
+		case 'b':   //lock
+			CanvasObject lock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
+			objects.add(lock);	
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
