@@ -72,9 +72,7 @@ public class Worm extends GravitableEnemy{
 			if(getHealPoints()<=0){
 				getController().destroyEntity(this);
 				dropItem();
-				//TODO fade animation
 			}
-			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
 		}
 	}
 
@@ -92,10 +90,8 @@ public class Worm extends GravitableEnemy{
 			moveRigth();
 		motion();
 		
-		if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+		if(getController().getPlayer().intersects(this))
 			((Damageable)getController().getPlayer()).takeDMG(this);
-			beginCoolDown();
-		}
 	}
 
 

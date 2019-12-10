@@ -19,9 +19,14 @@ public class Bat extends Enemy {
 
 	private static final double MOB_HP_INCREMENT = 0;
 
+	
+	private boolean inCooldown = false;
+	
 	//motion attributes
 	private int imgIndex = 0;
 	private int frameCount = 0;
+
+	
 	
 	
 
@@ -41,9 +46,6 @@ public class Bat extends Enemy {
 				getImages().add(motion);
 
 		setImage(getImages().get(0));
-
-//		FadeAnimation fa = new FadeAnimation(this,1,100,5,0.2,1);
-//		fa.animate();
 	}
 
 
@@ -55,7 +57,7 @@ public class Bat extends Enemy {
 			moveRigth();
 		motion();
 		
-		if(!isInCooldown()) {
+		if(inCooldown) {
 			getController().addEntity(new BatAcidlAttack(getX(), getY()+getHeight()+1, getController()));
 			beginCoolDown();
 		}
@@ -63,6 +65,9 @@ public class Bat extends Enemy {
 	}
 
 
+	
+	
+	
 	@Override
 	public void motion() {
 		frameCount = frameCount== IMAGE_RATE*getImages().size() ? 1 :  frameCount+1; 	//set's frames counter
@@ -98,9 +103,7 @@ public class Bat extends Enemy {
 			if(getHealPoints()<=0){
 				getController().destroyEntity(this);
 				dropItem();
-				//TODO fade animation
 			}
-			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
 		}
 	}
 
@@ -119,7 +122,22 @@ public class Bat extends Enemy {
 	
 	
 	
-
+	
+	/**
+	 * This method when called set's inCooldown to true and starts cool down timer.
+	 * when cool down timer ends, inCooldown is set to false
+	 */
+	public void beginCoolDown() {//TODO triangle parameters
+		if(!inCooldown ) {
+			inCooldown = true;
+			new Thread (() ->{
+				try {
+					Thread.sleep((long)Algorithm.triangle()*1000);
+					inCooldown = false;
+				} catch (InterruptedException e) { e.printStackTrace(); }
+			}).start();
+		}
+	}
 
 	
 	
@@ -129,6 +147,10 @@ public class Bat extends Enemy {
 	 * Class that represents the bat special attack
 	 */
 	private class BatAcidlAttack extends GravitableEnemy{
+		
+
+		
+		
 		
 		@SuppressWarnings("static-access")
 		public BatAcidlAttack(double x, double y,GameController controller) {
@@ -203,13 +225,12 @@ public class Bat extends Enemy {
 		public void update() {
 			sufferGravityForce();
 			
-			if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+			if(getController().getPlayer().intersects(this)) {
 				((Damageable)getController().getPlayer()).takeDMG(this);
 				getController().destroyEntity(this);
 			}
 			
 			motion();
 		}
-		
 	}
 }

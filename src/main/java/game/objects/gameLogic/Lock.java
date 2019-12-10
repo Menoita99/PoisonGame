@@ -1,6 +1,7 @@
-package game.objects;
+package game.objects.gameLogic;
 
 import game.controllers.GameController;
+import game.objects.Player;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Strikable;

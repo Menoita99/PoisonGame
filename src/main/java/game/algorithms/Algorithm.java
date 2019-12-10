@@ -73,4 +73,11 @@ public class Algorithm {
 	}
 
 
+	/**
+	 * 
+	 * @return return or 0 or 1 with 50% probability
+	 */
+	public static int randDropCoinOrItem() {
+		return Math.random() < 0.5 ? 0  : 1 ;
+	}
 }

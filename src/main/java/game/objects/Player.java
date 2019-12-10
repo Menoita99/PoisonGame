@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import game.algorithms.Algorithm;
+import game.animations.FadeAnimation;
 import game.controllers.GameController;
+import game.objects.gameLogic.Key;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Gravitable;
@@ -17,17 +19,18 @@ import javafx.scene.paint.Color;
 
 public class Player extends Movable implements Gravitable, Damageable, Strikable{
 
+	private static final int IMUNE_TIME = 1000; //milli
 	private static final int LAYER = 2;
-	public static final String GRAPHIC = "transferir";
+	public static final String GRAPHIC = "player";
 	private GameController gameController;
-	
+
 	private boolean isLeft = false;	
 
 	//player stat multipliers
 	private double damageMult = 1;
 	private double speedMult = 1;
 	private double jumpForce = 1;
-	
+
 	//player stats
 	private double hp = 100;
 	private int baseMove = 4;
@@ -36,28 +39,29 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	private double baseDamage = 25;
 	private double baseRange = 5;
 	private boolean canJump = false;
-	
+
 	private boolean buffed = false;
 
 	private List<Key> keys = new LinkedList<>();
 	private int coins = 0;
 
+	private boolean imune = false;
 
 	
 	
+
+
 	public Player(double x, double y, int id, Image graphicImage, double width, double height, GameController gameController) {
-		super(x, y, id, graphicImage, width*0.95, height*0.95, LAYER, gameController.getCurrentLevelWidth());
+		super(x, y, id, graphicImage, width*0.80, height*0.95, LAYER, gameController.getCurrentLevelWidth());
 		this.gameController = gameController;
 	}
 
 
 
-	
-	
+
+
 	@Override
 	public void update() {
-		if (hp <= 0)  gameController.endGame(false);
-
 		move();
 
 		attack();
@@ -66,7 +70,7 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			yVelocity++;
 		}
 		sufferGravityForce();
-		
+
 
 		if(getY()>gameController.getCurrentLevelHeight().get())	//ends game;
 			gameController.endGame(false);
@@ -74,8 +78,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	//Moving keys
 	private void move() {
 		if (gameController.isPressed(KeyCode.W) || gameController.isPressed(KeyCode.UP) || gameController.isPressed(KeyCode.SPACE) ) {
@@ -93,8 +97,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	/**
 	 * This method makes the player jump, not allowing for jumps while airborne
 	 */
@@ -107,8 +111,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	/**
 	 * This method moves the player to the right checking for collisions
 	 */
@@ -127,8 +131,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	/**
 	 * This method moves the player to the left checking for collisions
 	 */
@@ -147,8 +151,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	/**
 	 * This method expresses the effect of the force to which the object is subjected
 	 */
@@ -178,8 +182,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	private void attack() {
 		if ( gameController.isPressed(KeyCode.X) || gameController.isPressed(KeyCode.M) ) {
 			if (isLeft) {
@@ -195,7 +199,7 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 					if(entity instanceof Damageable && !entity.equals(this))
 						if(entity.getBoundary().intersects(getX()+getWidth(), getY(), getWidth(), getHeight()))
 							((Damageable) entity).takeDMG(this);
-				
+
 			}
 		}
 	}
@@ -212,107 +216,126 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 
 
 
-	
-	
+
+
 	public void setHP(double HP) {
 		hp = HP;
 	}
 
 
 
-	
-	
+
+
 	public double getDamageMult() {
 		return damageMult;
 	}
 
 
 
-	
-	
+
+
 	public void setDamageMult(int DM) {
 		damageMult = DM;
 	}
 
 
 
-	
-	
+
+
 	public double getSpeedMult() {
 		return speedMult;
 	}
 
 
 
-	
-	
+
+
 	public void setSpeedMult(double d) {
 		speedMult = d;
 	}
 
 
 
-	
-	
+
+
 	public double getJumpForce() {
 		return jumpForce;
 	}
 
 
 
-	
-	
+
+
 	public void setJumpForce(double d) {
 		jumpForce = d;
 	}
 
 
 
-	
-	
+
+
 	public boolean isBuffed() {
 		return buffed;
 	}
 
 
 
-	
-	
+
+
 	public void setBuffed(boolean buffed) {
 		this.buffed = buffed;
 	}
 
 
 
-	
-	
+
+
 	public static int getPlayerLayer() {
 		return LAYER;
 	}
 
 
 
-	
-	
+
+	/**
+	 * When player takes damage, it takes a IMUNE_TIME for can suffer damage again
+	 */
 	@Override
 	public void takeDMG(Strikable s) {
-		hp = hp - s.getDMG();
-		gameController.writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.RED);
+		if(!imune) {
+			hp = hp - s.getDMG();
+			gameController.writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.RED);
+			new FadeAnimation(this, 1, 100, 3, 0.3, 1).animate();
+
+			if (hp <= 0)  
+				gameController.endGame(false);
+			else {
+				imune = true;
+				new Thread (() ->{
+					try {
+						Thread.sleep((long)IMUNE_TIME);
+						imune = false; 
+					} catch (InterruptedException e) { e.printStackTrace(); }
+				}).start();
+			}
+		}
 	}
 
 
 
-	
-	
+
+
 	@Override
 	public double getDMG() {
 		int damage = (int) (baseDamage*damageMult);
 		return Algorithm.normal2(damage, Math.sqrt(baseRange), damage-baseRange, damage+baseRange);
 	}
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * Adds key to player keys
 	 * @param key
@@ -320,11 +343,11 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	public void addKey(Key key) {
 		keys.add(key);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * gets player keys
 	 */
@@ -352,5 +375,5 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	public void addCoin() {
 		coins ++;
 	}
-	
+
 }

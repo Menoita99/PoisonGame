@@ -16,7 +16,7 @@ public class IOManager {
 	
 
 	public IOManager() {
-		loadSaves();
+		loadSlots();
 	}
 
 	
@@ -26,13 +26,22 @@ public class IOManager {
 	/**
 	 * Loads 
 	 */
-	private void loadSaves() {
+	//save game , load game
+	private void loadSlots() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
-	//save game , load game
+	
+
+	public void startNewGame(int slot) {
+		
+	}
+	
+	
+	
+	
 	
 
 	/**

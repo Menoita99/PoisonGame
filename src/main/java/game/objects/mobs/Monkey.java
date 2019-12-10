@@ -21,7 +21,7 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 
 	private static final int IMAGE_RATE = 15;		//frames per image
 
-	private static String GRAPHIC= "monkey";
+	public static String GRAPHIC= "monkey";
 
 
 	//motion attributes
@@ -62,7 +62,7 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 	public double getDMG() {
 		double base = BASE_DMG + MOB_DMG_INCREMENT;
 		double range = RANGE_DMG + MOB_RANGE_DMG_INCREMENT;
-		return Algorithm.normal2(base, Math.sqrt(range), base-range, base+range);
+		return Algorithm.normal(base, Math.sqrt(range), base-range, base+range);
 	}
 
 
@@ -95,10 +95,8 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 			moveRigth();
 		motion();
 
-		if(getController().getPlayer().intersects(this) && !isInCooldown()) {
+		if(getController().getPlayer().intersects(this)) 
 			((Damageable)getController().getPlayer()).takeDMG(this);
-			beginCoolDown();
-		}
 	}
 
 
@@ -130,16 +128,5 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 
 			setImage(getImages().get(imgIndex));
 		}
-	}
-
-
-
-
-
-	/**
-	 * @return the image name
-	 */
-	public static String getGRAPHIC() {
-		return GRAPHIC;
 	}
 }

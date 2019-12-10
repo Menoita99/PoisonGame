@@ -1,4 +1,4 @@
-package game.objects;
+package game.objects.gameLogic;
 
 
 import game.controllers.GameController;

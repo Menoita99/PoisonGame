@@ -20,10 +20,10 @@ public class FadeAnimation extends Thread{
 	private double maxOpcaity;
 
 
-	public FadeAnimation(CanvasObject targetObject, double startOpacity, int time , int loops, double minOpacity , double maxOpcaity) {
+	public FadeAnimation(CanvasObject targetObject, double startOpacity, int loopTime , int loops, double minOpacity , double maxOpcaity) {
 		this.targetObject = targetObject;
 		this.opacity = startOpacity > maxOpcaity ? maxOpcaity : startOpacity;
-		this.time = time;
+		this.time = loopTime;
 		this.loops = loops;
 		this.minOpacity = minOpacity;
 		this.maxOpcaity = maxOpcaity;
@@ -36,6 +36,8 @@ public class FadeAnimation extends Thread{
 	 */
 	@Override
 	public void run() {
+		System.out.println(time);
+		long start= System.currentTimeMillis();
 		double rate = (1/((double)time)) * (0.5);
 		double step = 1/rate;
 		int loop = 0;
@@ -54,8 +56,11 @@ public class FadeAnimation extends Thread{
 				}
 				try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
 			}
-			loops++;
+			loop++;
 		}
+		
+		long end= System.currentTimeMillis();
+		System.out.println((double)(end-start)/(double)1000 + "s");
 	}
 
 

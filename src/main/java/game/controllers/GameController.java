@@ -14,15 +14,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.controls.Camera;
 import game.controls.LevelData;
 import game.objects.Background;
-import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
-import game.objects.Door;
-import game.objects.Key;
-import game.objects.Lock;
-import game.objects.Portal;
+import game.objects.Thorn;
 import game.objects.drops.Coin;
 import game.objects.drops.Item;
+import game.objects.drops.WoodBox;
+import game.objects.gameLogic.CheckPoint;
+import game.objects.gameLogic.Door;
+import game.objects.gameLogic.Key;
+import game.objects.gameLogic.Lock;
+import game.objects.gameLogic.Portal;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.UIObject;
 import game.objects.mobs.*;
@@ -84,7 +86,7 @@ public class GameController implements Controllable, Initializable{
 
 	private	List<UIObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
 	
-	private int score = 0;											
+	private int score;											
 
 
 
@@ -222,6 +224,8 @@ public class GameController implements Controllable, Initializable{
 		Background b = new Background(idCounter, graphics.get(Background.getGRAPHIC()),camera,this);
 		objects.add(b);
 		idCounter++;
+		
+		score = 0;
 	}
 
 
@@ -249,7 +253,7 @@ public class GameController implements Controllable, Initializable{
 			return;
 		case '2':	//Monkey enemy
 			CanvasObject monkey = new Monkey(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(Monkey.getGRAPHIC()), BLOCKS_SIZE, BLOCKS_SIZE, this);
+					graphics.get(Monkey.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(monkey);	
 			return;
 		case '3':	//Bat enemy
@@ -317,6 +321,21 @@ public class GameController implements Controllable, Initializable{
 					graphics.get(Coin.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(coin);	
 			return;
+		case 'j':	//Rat enemy
+			CanvasObject rat = new Rat(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Rat.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(rat);	
+			return;
+		case 'k':	//thorn
+			CanvasObject thorn = new Thorn(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Thorn.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(thorn);	
+			return;
+		case 'l':	//box
+			CanvasObject woodBox = new WoodBox(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get( WoodBox.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(woodBox);	
+			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
 		}
@@ -328,7 +347,7 @@ public class GameController implements Controllable, Initializable{
 
 
 	/**
-	 * Creates checkPoint instance
+	 * Creates checkPoint instance and sets controller checkpoint to the first comes in x coordinate
 	 */
 	private void createCheckPoint(int i, int j) {
 		CanvasObject checkPoint = new CheckPoint(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, graphics.get(CheckPoint.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
@@ -423,12 +442,12 @@ public class GameController implements Controllable, Initializable{
 
 
 	/**
-	 * Ends Level and saves stats
+	 * Ends Level and saves status
 	 * @param won if won equals true means level was passed with success
 	 */
 	public void endGame(boolean won) {
 		gameLoop.stop();
-		//		IOManager.getIntance.saveProgress()
+		//		IOManager.getIntance.saveProgress(this)
 		displayEndGameAnimation(won);
 	}
 
@@ -698,7 +717,7 @@ public class GameController implements Controllable, Initializable{
 		
 		p.setOnFinished((evt) -> {
 			
-			HBox hb = new HBox();
+			HBox hb = new HBox();	
 
 			Region hbleft = new Region();
 			Region hbright = new Region();
@@ -721,7 +740,7 @@ public class GameController implements Controllable, Initializable{
 			label.setTextFill(Color.WHITE);
 			label.setMinWidth(210);
 			label.setTextAlignment(TextAlignment.CENTER);
-			label.setFont(Font.font(135));
+			label.setFont(Font.font(100));
 
 			Button lvlMenuButton = new Button("Return to main menu");
 			lvlMenuButton.setOnAction((evt1) ->{ 
@@ -729,10 +748,25 @@ public class GameController implements Controllable, Initializable{
 				manager.setRoot("levelMenuScene");
 				manager.setResizable(true);
 			});
+			
+			Button nextLvlButton = new Button("Next Level");
+			nextLvlButton.setOnAction((evt2) -> {
+				manager.setProperty("level", (int)manager.getProperty("level")+1);	//THIS WILL GIVE AN ERROR WHEN IT'S THE LAST LVL
+				start();
+			});
 
+			
+			Button retryButton = new Button("Retry");	//retry button
+			retryButton.setOnAction((evt2) -> start());
+			
 			hb.getChildren().addAll(hbleft,endPane,hbright);
-			endPane.getChildren().addAll(vbup,label,lvlMenuButton,vbdown);
+			endPane.getChildren().addAll(vbup,label,lvlMenuButton);
 
+			if(won)
+				endPane.getChildren().addAll(nextLvlButton,vbdown);
+			else
+				endPane.getChildren().addAll(retryButton,vbdown);
+			
 			mainPane.getChildren().add(hb);
 		});
 	}

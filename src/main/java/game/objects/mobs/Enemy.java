@@ -22,8 +22,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	private boolean isLeft = false;						//Useful for motion images
 	private double xVelocity = 5;						//pixel per frame
 	
-	private double healPoints;							//this must be set by our random algorithm	
-	private boolean inCooldown = false;
+	private double healPoints;								
 		
 	private GameController controller;	
 	
@@ -44,7 +43,6 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		double hpMedia = Math.max(BASE_HP+hp,0);
 		double hpRange = hpMedia * HP_RATIO;
 		healPoints = Algorithm.normal(hpMedia, Math.sqrt(hpRange), hpMedia-hpRange, hpMedia+hpRange);
-		System.out.println(healPoints);
 	}
 
 	
@@ -119,27 +117,6 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		}
 		setX(getX() - 1);		//moves 1 pixel
 
-	}
-	
-	
-	
-	
-	
-	
-	/**
-	 * This method when called set's inCooldown to true and starts cool down timer.
-	 * when cool down timer ends, inCooldown is set to false
-	 */
-	public void beginCoolDown() {//TODO triangle parameters
-		if(!inCooldown) {
-			inCooldown = true;
-			new Thread (() ->{
-				try {
-					Thread.sleep((long)Algorithm.triangle()*1000);
-					inCooldown = false;
-				} catch (InterruptedException e) { e.printStackTrace(); }
-			}).start();
-		}
 	}
 	
 	
@@ -272,16 +249,5 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 	 */
 	public void setLeft(boolean isLeft) {
 		this.isLeft = isLeft;
-	}
-
-	
-	
-	
-	
-	/**
-	 * @return the isInCooldown
-	 */
-	public boolean isInCooldown() {
-		return inCooldown;
 	}
 }
