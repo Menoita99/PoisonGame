@@ -10,6 +10,7 @@ import game.objects.mechanics.Strikable;
 import game.objects.mechanics.Damageable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Monkey extends GravitableEnemy implements Gravitable{
 
@@ -71,14 +72,13 @@ public class Monkey extends GravitableEnemy implements Gravitable{
 	@Override
 	public void takeDMG(Strikable s) {
 		if(getHealPoints()>0) {
+			getController().writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.DEEPSKYBLUE);
 			setHealPoints(getHealPoints()-s.getDMG());
 			if(getHealPoints()<=0){
 				getController().destroyEntity(this);
 				dropItem();
-				//TODO fade animation
 			}
-			System.out.println("mob "+this.getClass()+" taked "+s.getDMG()+" damage from "+s.getClass());
-		}
+ 		}
 	}
 
 

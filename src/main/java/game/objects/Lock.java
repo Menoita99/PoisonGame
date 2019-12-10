@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 public class Lock extends CanvasObject implements Damageable{
 	
 	public static int LAYER = 2;
-	public static final String GRAPHIC = "yellowLock";
+	public static final String GRAPHIC = "Lock";
 	private GameController controller;
 	private Color color;
 

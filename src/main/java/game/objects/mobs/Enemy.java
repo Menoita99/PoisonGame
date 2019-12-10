@@ -44,6 +44,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		double hpMedia = Math.max(BASE_HP+hp,0);
 		double hpRange = hpMedia * HP_RATIO;
 		healPoints = Algorithm.normal(hpMedia, Math.sqrt(hpRange), hpMedia-hpRange, hpMedia+hpRange);
+		System.out.println(healPoints);
 	}
 
 	
@@ -134,9 +135,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 			inCooldown = true;
 			new Thread (() ->{
 				try {
-					double time = Algorithm.triangle();
-					System.out.println("cooldown time-> " + time +" mob "+this.getClass());
-					Thread.sleep((long)time*1000);
+					Thread.sleep((long)Algorithm.triangle()*1000);
 					inCooldown = false;
 				} catch (InterruptedException e) { e.printStackTrace(); }
 			}).start();

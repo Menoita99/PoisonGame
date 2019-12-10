@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 
 public class Background extends CanvasObject{
 
-	private static String GRAPHIC= "background3";
+	private static String GRAPHIC= "background";
 	private static String HELL_GRAPHIC= "hell";
 
 	private static final int LAYER = 0;
@@ -26,6 +26,10 @@ public class Background extends CanvasObject{
 	}
 
 
+	
+	/**
+	 * Changes background depending on depth
+	 */
 	@Override
 	public void update() {
 		if(controller.getPlayer().getY() >= controller.getHellStartHeight().doubleValue())
@@ -34,7 +38,7 @@ public class Background extends CanvasObject{
 			setImage(controller.getGraphic(GRAPHIC));
 		}
 		
-	} //we can change background image here, to night or something
+	}
 	
 
 

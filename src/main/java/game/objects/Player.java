@@ -40,12 +40,13 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	private boolean buffed = false;
 
 	private List<Key> keys = new LinkedList<>();
+	private int coins = 0;
 
 
 	
 	
 	public Player(double x, double y, int id, Image graphicImage, double width, double height, GameController gameController) {
-		super(x, y, id, graphicImage, width, height, LAYER, gameController.getCurrentLevelWidth());
+		super(x, y, id, graphicImage, width*0.95, height*0.95, LAYER, gameController.getCurrentLevelWidth());
 		this.gameController = gameController;
 	}
 
@@ -296,7 +297,6 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	@Override
 	public void takeDMG(Strikable s) {
 		hp = hp - s.getDMG();
-		System.out.println("Player was damaged by "+s.getDMG()+" and the mob was "+ s.getClass() + ". Player hp is " + hp); //DEBUGGING
 		gameController.writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.RED);
 	}
 
@@ -330,6 +330,27 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	 */
 	public List<Key> getKeys() {
 		return keys;
+	}
+
+
+
+
+	/**
+	 * @return the coins
+	 */
+	public int getCoins() {
+		return coins;
+	}
+
+
+
+
+
+	/**
+	 * increment coin value
+	 */
+	public void addCoin() {
+		coins ++;
 	}
 	
 }

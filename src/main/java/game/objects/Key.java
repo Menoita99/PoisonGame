@@ -7,14 +7,14 @@ import javafx.scene.paint.Color;
 
 public class Key extends CanvasObject {
 	
-	public static final String GRAPHIC = "yellowKey";
+	public static final String GRAPHIC = "Key";
 	public static int LAYER = 1;
 	private GameController controller;
 	private Color color;
 	
 
 	public Key(double x, double y, int id, Image graphicImage, double width, double height,Color color,GameController controller) {
-		super(x, y, id, graphicImage, width*2/3, height*1/3, LAYER);
+		super(x+width*1/3, y+height*1/2 , id, graphicImage, width*2/3, height*1/2, LAYER);
 		this.color = color;
 		this.controller = controller;
 	}

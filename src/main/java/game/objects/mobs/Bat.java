@@ -6,6 +6,7 @@ import game.objects.mechanics.Damageable;
 import game.objects.mechanics.Strikable;
 import game.utils.Cutter;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Bat extends Enemy {
 
@@ -92,6 +93,7 @@ public class Bat extends Enemy {
 	@Override
 	public void takeDMG(Strikable s) {
 		if(getHealPoints()>0) {
+			getController().writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.DEEPSKYBLUE);
 			setHealPoints(getHealPoints()-s.getDMG());
 			if(getHealPoints()<=0){
 				getController().destroyEntity(this);

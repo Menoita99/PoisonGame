@@ -146,8 +146,7 @@ public class Item extends CanvasObject {
 	private void healthBuff(Player player) {
 		player.setHP( player.getHP() + 25 );
 		if (player.getHP() > 100) player.setHP( 100 );
-		gameController.writeText(getX(), getY(), 25+"", 1000, Color.GREEN);
-		System.out.println("player healed, health is " + player.getHP()); //DEBUGGING
+		gameController.writeText(getX(), getY(), 25+"", 1000, Color.LIMEGREEN);
 	}
 	
 	

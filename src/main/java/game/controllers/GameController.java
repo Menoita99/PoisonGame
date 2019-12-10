@@ -17,15 +17,16 @@ import game.objects.Background;
 import game.objects.CheckPoint;
 import game.objects.Platform;
 import game.objects.Player;
-import game.objects.Flag;
+import game.objects.Door;
 import game.objects.Key;
 import game.objects.Lock;
 import game.objects.Portal;
+import game.objects.drops.Coin;
 import game.objects.drops.Item;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.UIObject;
 import game.objects.mobs.*;
-import game.objects.ui.HealthBar;
+import game.objects.ui.StatusBar;
 import javafx.animation.AnimationTimer;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
@@ -57,8 +58,6 @@ public class GameController implements Controllable, Initializable{
 
 	private static final int UPDATE_DISTANCE = 200;
 	private static final String GRAPHIC_PATH = "src/main/resources/images";
-	//	private static final int DEFAULT_WIDTH =  1260;							//Used in factors
-	//	private static final int DEFAULT_HEIGHT = 680;							//Used in factors
 	private static final int LAYERS = 5;
 	public static final int BLOCKS_SIZE = 30;	
 	private double xFactor=1;
@@ -72,7 +71,7 @@ public class GameController implements Controllable, Initializable{
 	private ManagerController manager;								//scene manager
 	private Camera camera;											
 
-	private Map<KeyCode, Boolean> keys = new HashMap<>();			//keys pressed list
+	private Map<KeyCode, Boolean> keys  = new HashMap<>();			//keys pressed list
 	private	Map<String, Image> graphics = new HashMap<>();			
 	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
@@ -84,6 +83,8 @@ public class GameController implements Controllable, Initializable{
 	private	CheckPoint checkPoint;									//Last checkpoint
 
 	private	List<UIObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
+	
+	private int score = 0;											
 
 
 
@@ -268,7 +269,7 @@ public class GameController implements Controllable, Initializable{
 
 			camera = new Camera(manager.getScene(),player,currentLevelWidth,currentLevelHeight);	//setting camera
 			
-			objects.add(new HealthBar(player, camera.getViewPort()));
+			objects.add(new StatusBar(player, camera.getViewPort(), this));
 			return;
 		case '6':	//CheckPoint
 			createCheckPoint(i, j);
@@ -283,20 +284,38 @@ public class GameController implements Controllable, Initializable{
 					graphics.get(Portal.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(portal);	
 			return;
-		case '9':   //Flag
-			CanvasObject flag = new Flag(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(Flag.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+		case '9':   //Door
+			CanvasObject flag = new Door(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Door.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
 			objects.add(flag);	
 			return;
-		case 'a':   //key
-			CanvasObject key = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
-			objects.add(key);	
+		case 'a':   //yellow key
+			CanvasObject ykey = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("yellow"+Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
+			objects.add(ykey);	
 			return;
-		case 'b':   //lock
-			CanvasObject lock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
-					graphics.get(Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
-			objects.add(lock);	
+		case 'b':   //yellow lock
+			CanvasObject ylock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("yellow"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
+			objects.add(ylock);	
+			return;
+		case 'c':   //blue key
+			CanvasObject bkey = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("blue"+Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			objects.add(bkey);	
+			return;
+		case 'd':   //blue lock
+			CanvasObject block = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("blue"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			objects.add(block);	
+			return;
+			
+		//e f g h  (reserved for red lock , red key, green lock , green key)
+			
+		case 'i':   //Coin
+			CanvasObject coin= new Coin(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get(Coin.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
+			objects.add(coin);	
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
@@ -336,9 +355,6 @@ public class GameController implements Controllable, Initializable{
 	 * Initialise Scene listeners and Canvas
 	 */
 	private void initListeners() {
-		//		xFactor = manager.getScene().getWidth()/DEFAULT_WIDTH;			//Defines factors 	//	TODO use property 	//discuss with NUNO LOBATO	
-		//		yFactor = manager.getScene().getHeight()/DEFAULT_HEIGHT;							//	TODO use property
-
 		manager.getScene().setOnKeyPressed(event -> keys.put(event.getCode(), true));		//add Listeners
 		manager.getScene().setOnKeyReleased(event -> keys.put(event.getCode(), false));
 
@@ -461,6 +477,30 @@ public class GameController implements Controllable, Initializable{
 	public DoubleProperty getHellStartHeight() {
 		return hellStartHeight;
 	}
+
+
+
+
+
+	/**
+	 * @return the score
+	 */
+	public int getScore() {
+		return score;
+	}
+
+
+
+
+
+
+	/**
+	 * @param score the score to set
+	 */
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 
 
 
@@ -677,7 +717,7 @@ public class GameController implements Controllable, Initializable{
 			VBox endPane = new VBox();
 			endPane.setMinWidth(210);
 
-			Label label = new Label(won ? "WIN" : "LOSE");
+			Label label = new Label(won ? "LEVEL PASSED!!!" : "GAME OVER");
 			label.setTextFill(Color.WHITE);
 			label.setMinWidth(210);
 			label.setTextAlignment(TextAlignment.CENTER);

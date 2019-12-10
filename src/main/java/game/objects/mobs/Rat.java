@@ -3,6 +3,7 @@ package game.objects.mobs;
 import game.controllers.GameController;
 import game.objects.mechanics.Strikable;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Rat extends GravitableEnemy {
 	
@@ -22,6 +23,7 @@ public class Rat extends GravitableEnemy {
 
 	@Override
 	public void takeDMG(Strikable s) {
+		getController().writeText(getX(), getY(), Math.round(s.getDMG())+"", 1000, Color.DEEPSKYBLUE);
 		// TODO Auto-generated method stub
 
 	}
