@@ -122,7 +122,7 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			
 			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
 
-			objects.addAll(gameController.getPlatforms(getX()+1, getY()+1, getWidth(), getHeight()-2));
+			objects.addAll(gameController.getStaticEntities(getX()+1, getY()+1, getWidth(), getHeight()-2));
 			
 			for(CanvasObject entity : objects) {
 				if(entity.intersects(this) && !entity.equals(this)){
@@ -147,7 +147,7 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			
 			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
 
-			objects.addAll(gameController.getPlatforms(getX()-1, getY()+1, getWidth(), getHeight()-2));
+			objects.addAll(gameController.getStaticEntities(getX()-1, getY()+1, getWidth(), getHeight()-2));
 			
 			for(CanvasObject entity : objects) {
 				if(entity.intersects(this) && !entity.equals(this)){
@@ -174,8 +174,8 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 			
 			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
 
-			objects.addAll(gameController.getPlatforms(getX()+1, getY()+1, getWidth()-2, getHeight()-1));
-			objects.addAll(gameController.getPlatforms(getX()+1, getY()-1, getWidth()-2, getHeight()));
+			objects.addAll(gameController.getStaticEntities(getX()+1, getY()+1, getWidth()-2, getHeight()-1));
+			objects.addAll(gameController.getStaticEntities(getX()+1, getY()-1, getWidth()-2, getHeight()));
 			
 			for(CanvasObject entity : objects) {
 				if (movingDown) {
@@ -208,6 +208,10 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 					if(entity instanceof Damageable && !entity.equals(this))
 						if(entity.getBoundary().intersects(getX()-getWidth(), getY(), getWidth(), getHeight()))
 							((Damageable) entity).takeDMG(this);
+				
+				for(CanvasObject entity : gameController.getStaticEntities(getX()-getWidth(), getY(), getWidth(), getHeight()))
+					if(entity instanceof Damageable && !entity.equals(this))
+						((Damageable) entity).takeDMG(this);
 			}
 			else {
 				//play right attack animation
@@ -215,6 +219,10 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 					if(entity instanceof Damageable && !entity.equals(this))
 						if(entity.getBoundary().intersects(getX()+getWidth(), getY(), getWidth(), getHeight()))
 							((Damageable) entity).takeDMG(this);
+				
+				for(CanvasObject entity : gameController.getStaticEntities(getX()+getWidth(), getY(), getWidth(), getHeight()))
+					if(entity instanceof Damageable && !entity.equals(this))
+						((Damageable) entity).takeDMG(this);
 
 			}
 		}

@@ -45,6 +45,6 @@ public class Lock extends CanvasObject implements Damageable{
 		if(s instanceof Player) 
 			for(Key key : ((Player)s).getKeys())
 				if(key.getColor().equals(this.color))
-					controller.destroyEntity(this);
+					controller.destroyStaticEntity(this);
 	}
 }

@@ -41,7 +41,7 @@ public class WoodBox extends CanvasObject implements Damageable{
 
 	@Override
 	public void takeDMG(Strikable s) {
-		controller.destroyEntity(this);
+		controller.destroyStaticEntity(this);
 		if(Algorithm.randDropCoinOrItem() == 0) {
 			Item drop = new Item(getX(), getY(), controller.getNewId(), controller.getGraphic(Item.GRAPHIC),  GameController.BLOCKS_SIZE, GameController.BLOCKS_SIZE, controller);
 			controller.addEntity(drop);

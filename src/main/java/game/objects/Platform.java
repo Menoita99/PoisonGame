@@ -21,8 +21,8 @@ public class Platform extends CanvasObject {
 
 	private GameController controller;
 
-	
-	
+
+
 	public Platform(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
 		super(x, y, id, null, width, height, LAYER);
 		this.controller = controller;
@@ -65,20 +65,22 @@ public class Platform extends CanvasObject {
 	}
 
 
-	
-	
-	
+
+
+
 	/**
 	 * 
 	 * @return true if there is a platform at given orientation 
 	 */
 	private boolean isObjectAt(Orientation orientation) {
 		Point2D center = new Point2D(getX()+getWidth()/2,getY()+getHeight()/2);
-		
+
 		Point2D objectAt = new Point2D(center.getX()+orientation.getCoord().getX()*getWidth(),
-									   center.getY()+orientation.getCoord().getY()*getHeight());
-		
-			if(!controller.getPlatforms(objectAt).isEmpty())
+				center.getY()+orientation.getCoord().getY()*getHeight());
+
+		if(!controller.getStaticEntities(objectAt).isEmpty()) 
+			for(CanvasObject obj :controller.getStaticEntities(objectAt))
+				if(obj instanceof Platform)
 					return true;
 		return false;
 	}

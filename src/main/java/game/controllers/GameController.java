@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.controls.Camera;
@@ -78,8 +79,6 @@ public class GameController implements Controllable, Initializable{
 	private	Map<String, Image> graphics = new HashMap<>();			
 	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
-	private Map<Point2D,Platform> platforms = new HashMap<>();
-	
 	private AnimationTimer gameLoop;								
 
 	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
@@ -87,7 +86,8 @@ public class GameController implements Controllable, Initializable{
 	private Player player;											
 	private	CheckPoint checkPoint;									//Last checkpoint
 
-	private	List<UIObject> objects = new CopyOnWriteArrayList<>();	//Game Objects (render list)
+	private	List<UIObject> objects = new CopyOnWriteArrayList<>();			//Game Objects (render list)
+	private Map<Point2D,CanvasObject> staticObjects = new ConcurrentHashMap<>();		//Static Objects (render list)
 	
 	private int score;											
 
@@ -177,8 +177,8 @@ public class GameController implements Controllable, Initializable{
 			}
 		}
 		
-		for(Point2D coord : platforms.keySet()) { //render platforms
-			Platform plat = platforms.get(coord);
+		for(Point2D coord : staticObjects.keySet()) { //render platforms
+			CanvasObject plat = staticObjects.get(coord);
 			if(viewPort.getBoundsInParent().intersects(plat.getBoundary()))
 				plat.render(canvas.get(plat.getLayer()).getGraphicsContext2D(), viewPort.getLayoutX(),viewPort.getLayoutY());
 		}
@@ -224,7 +224,7 @@ public class GameController implements Controllable, Initializable{
 		currentLevelHeight.set(data.length*xFactor*BLOCKS_SIZE);
 
 		objects.clear();
-		platforms.clear();
+		staticObjects.clear();
 
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
@@ -258,7 +258,7 @@ public class GameController implements Controllable, Initializable{
 		case '1':	//platform
 			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, 
 					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE,this);
-			platforms.put(new Point2D(j, i), (Platform) platform);																		
+			staticObjects.put(new Point2D(j, i), (Platform) platform);																		
 			return;
 		case '2':	//Monkey enemy
 			CanvasObject monkey = new Monkey(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -310,7 +310,7 @@ public class GameController implements Controllable, Initializable{
 		case 'b':   //yellow lock
 			CanvasObject ylock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get("yellow"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.YELLOW, this);
-			objects.add(ylock);	
+			staticObjects.put(new Point2D(j,i),(ylock));	
 			return;
 		case 'c':   //blue key
 			CanvasObject bkey = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -320,7 +320,7 @@ public class GameController implements Controllable, Initializable{
 		case 'd':   //blue lock
 			CanvasObject block = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get("blue"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
-			objects.add(block);	
+			staticObjects.put(new Point2D(j,i),block);	
 			return;
 			
 		//e f g h  (reserved for red lock , red key, green lock , green key) 
@@ -343,7 +343,7 @@ public class GameController implements Controllable, Initializable{
 		case 'l':	//box
 			CanvasObject woodBox = new WoodBox(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get( WoodBox.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);
-			objects.add(woodBox);	
+			staticObjects.put(new Point2D(j,i),woodBox);	
 			return;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + data[i].charAt(j) +" invalid entity");
@@ -526,19 +526,19 @@ public class GameController implements Controllable, Initializable{
 	 * This method returns the platforms that intercepts with the given boundary 
 	 * This only works with w<= BLOCKS_SIZE and h<= BLOCKS_SIZE
 	 */
-	public List<Platform> getPlatforms(double x , double y , double w , double h) {
+	public List<CanvasObject> getStaticEntities(double x , double y , double w , double h) {
 		//TODO fix: only works with w<= BLOCKS_SIZE and h<= BLOCKS_SIZE
-		List<Platform> output = new ArrayList<>();
+		List<CanvasObject> output = new ArrayList<>();
 		
 		Point2D upperLeftPoint = new Point2D((int)(x/BLOCKS_SIZE),(int)(y/BLOCKS_SIZE));
 		Point2D upperRightPoint = new Point2D((int)((x+w)/BLOCKS_SIZE),(int)(y/BLOCKS_SIZE));
 		Point2D bottomLeftPoint = new Point2D((int)(x/BLOCKS_SIZE),(int)((y+h)/BLOCKS_SIZE));
 		Point2D bottomRightPoint = new Point2D((int)((x+w)/BLOCKS_SIZE),(int)((y+h)/BLOCKS_SIZE));
 		
-		if(platforms.containsKey(upperLeftPoint)) output.add(platforms.get(upperLeftPoint));
-		if(platforms.containsKey(upperRightPoint)) output.add(platforms.get(upperRightPoint));
-		if(platforms.containsKey(bottomLeftPoint)) output.add(platforms.get(bottomLeftPoint));
-		if(platforms.containsKey(bottomRightPoint)) output.add(platforms.get(bottomRightPoint));
+		if(staticObjects.containsKey(upperLeftPoint)) output.add(staticObjects.get(upperLeftPoint));
+		if(staticObjects.containsKey(upperRightPoint)) output.add(staticObjects.get(upperRightPoint));
+		if(staticObjects.containsKey(bottomLeftPoint)) output.add(staticObjects.get(bottomLeftPoint));
+		if(staticObjects.containsKey(bottomRightPoint)) output.add(staticObjects.get(bottomRightPoint));
 		
 		return output;
 	}
@@ -551,16 +551,52 @@ public class GameController implements Controllable, Initializable{
 	/**
 	 * This method returns the platforms that intercepts with the given point
 	 */
-	public List<Platform> getPlatforms(Point2D p) {
-		List<Platform> output = new ArrayList<>();
+	public List<CanvasObject> getStaticEntities(Point2D p) {
+		List<CanvasObject> output = new ArrayList<>();
 		
 		Point2D point = new Point2D((int)(p.getX()/BLOCKS_SIZE),(int)(p.getY()/BLOCKS_SIZE));
 
-		if(platforms.containsKey(point)) output.add(platforms.get(point));
+		if(staticObjects.containsKey(point)) output.add(staticObjects.get(point));
 		
 		return output;
 	}
 
+
+
+
+
+
+	/**
+	 * This method add a static canvas object
+	 */
+	public void addStaticEntity(CanvasObject sObj) {
+		staticObjects.put(new Point2D(sObj.getX(),sObj.getY()),sObj);
+	}
+
+
+
+
+
+
+	/**
+	 * This method deletes the static entity there is on the given point
+	 */
+	public void destroyStaticEntity(Point2D p) {
+		staticObjects.remove(new Point2D((int)(p.getX()/BLOCKS_SIZE),(int)(p.getY()/BLOCKS_SIZE)));
+	}
+
+
+
+
+
+
+	/**
+	 * This method deletes the given static entity
+	 */
+	public void destroyStaticEntity(CanvasObject sObj) {
+		staticObjects.remove(new Point2D((int)(sObj.getX()/BLOCKS_SIZE),(int)(sObj.getY()/BLOCKS_SIZE)));
+	}
+	
 
 
 
@@ -823,4 +859,6 @@ public class GameController implements Controllable, Initializable{
 			mainPane.getChildren().add(hb);
 		});
 	}
+	
+
 }

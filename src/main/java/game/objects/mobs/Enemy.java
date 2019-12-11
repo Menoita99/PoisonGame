@@ -76,7 +76,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 
 			List<CanvasObject> objects = getController().getObjectsAtLayer(getLayer());
 
-			objects.addAll(controller.getPlatforms(getX()+1, getY()+1, getWidth(), getHeight()-2));
+			objects.addAll(controller.getStaticEntities(getX()+1, getY()+1, getWidth(), getHeight()-2));
 
 			for(CanvasObject entity : objects) {
 
@@ -111,7 +111,7 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 
 			List<CanvasObject> objects = getController().getObjectsAtLayer(getLayer());
 
-			objects.addAll(controller.getPlatforms(getX()-1, getY()+1, getWidth(), getHeight()-2));
+			objects.addAll(controller.getStaticEntities(getX()-1, getY()+1, getWidth(), getHeight()-2));
 
 			for(CanvasObject entity : objects) {
 

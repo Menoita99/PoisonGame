@@ -36,8 +36,8 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
 			List<CanvasObject> objects = getController().getObjectsAtLayer(getLayer());
 
-			objects.addAll(getController().getPlatforms(getX()+1, getY()+1, getWidth()-2, getHeight()));
-			objects.addAll(getController().getPlatforms(getX()+1, getY()-1, getWidth()-2, getHeight()));
+			objects.addAll(getController().getStaticEntities(getX()+1, getY()+1, getWidth()-2, getHeight()));
+			objects.addAll(getController().getStaticEntities(getX()+1, getY()-1, getWidth()-2, getHeight()));
 			
 			for (CanvasObject entity : objects) {
 
