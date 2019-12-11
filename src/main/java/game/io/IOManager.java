@@ -1,16 +1,12 @@
 package game.io;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class IOManager {
 	
 	private static IOManager INSTANCE = null;
-	private static String ROOT  = "src/main/resources/save";
-	
-	private List<File> files = new ArrayList<>();
-
+	private static String ROOT  = "src/main/resources/save/";
 	
 	
 	
@@ -28,15 +24,21 @@ public class IOManager {
 	 */
 	//save game , load game
 	private void loadSlots() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 
 	
 	
-
-	public void startNewGame(int slot) {
-		
+	/**
+	 * Creates an slot file if it exits overwrites it 
+	 * @param slot slot number
+	 * @throws IOException
+	 */
+	public void startNewGame(int slot) throws IOException {
+		FileWriter writer = new FileWriter(ROOT+"slot"+slot+".txt");
+		writer.write("");  
+		writer.close();
 	}
 	
 	
@@ -50,5 +52,13 @@ public class IOManager {
 	public static IOManager getINSTANCE() {
 		if(INSTANCE == null) INSTANCE = new IOManager();
 		return INSTANCE;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			IOManager.getINSTANCE().startNewGame(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

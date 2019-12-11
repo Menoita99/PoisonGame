@@ -119,7 +119,12 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	private void moveRight() {
 		isLeft = false;
 		for (int i = 0; i < baseMove*speedMult; i++) {
-			for(CanvasObject entity : gameController.getObjectsAtLayer(getLayer())) {
+			
+			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
+
+			objects.addAll(gameController.getPlatforms(getX()+1, getY()+1, getWidth(), getHeight()-2));
+			
+			for(CanvasObject entity : objects) {
 				if(entity.intersects(this) && !entity.equals(this)){
 					if(entity.getBoundary().intersects(getX()+1, getY()+1, getWidth(), getHeight()-2) && !entity.equals(this)) //checks collision and checks if entity is it self
 						return;
@@ -139,7 +144,12 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 	private void moveLeft() {
 		isLeft = true;
 		for (int i = 0; i < baseMove*speedMult; i++) {
-			for(CanvasObject entity : gameController.getObjectsAtLayer(getLayer())) {
+			
+			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
+
+			objects.addAll(gameController.getPlatforms(getX()-1, getY()+1, getWidth(), getHeight()-2));
+			
+			for(CanvasObject entity : objects) {
 				if(entity.intersects(this) && !entity.equals(this)){
 					if(entity.getBoundary().intersects(getX()-1, getY()+1, getWidth(), getHeight()-2) && !entity.equals(this)) //checks collision and checks if entity is it self
 						return;
@@ -161,7 +171,13 @@ public class Player extends Movable implements Gravitable, Damageable, Strikable
 		boolean movingDown = yVelocity > 0;
 
 		for (int i = 0; i < Math.abs(yVelocity); i++) {
-			for(CanvasObject entity : gameController.getObjectsAtLayer(getLayer())) {
+			
+			List<CanvasObject> objects = gameController.getObjectsAtLayer(getLayer());
+
+			objects.addAll(gameController.getPlatforms(getX()+1, getY()+1, getWidth()-2, getHeight()-1));
+			objects.addAll(gameController.getPlatforms(getX()+1, getY()-1, getWidth()-2, getHeight()));
+			
+			for(CanvasObject entity : objects) {
 				if (movingDown) {
 					if(entity.getBoundary().intersects(getX()+1, getY()+1, getWidth()-2, getHeight()-1) && !entity.equals(this)){
 						yVelocity = 0;	

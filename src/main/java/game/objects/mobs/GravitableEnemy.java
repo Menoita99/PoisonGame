@@ -1,5 +1,7 @@
 package game.objects.mobs;
 
+import java.util.List;
+
 import game.controllers.GameController;
 import game.objects.mechanics.CanvasObject;
 import game.objects.mechanics.Gravitable;
@@ -32,7 +34,12 @@ public abstract class GravitableEnemy extends Enemy implements Gravitable{
 
 		for (double i = 0; i < Math.abs(getYVelocity()); i += G_FORCE) {
 
-			for (CanvasObject entity : getController().getObjectsAtLayer(getLayer())) {
+			List<CanvasObject> objects = getController().getObjectsAtLayer(getLayer());
+
+			objects.addAll(getController().getPlatforms(getX()+1, getY()+1, getWidth()-2, getHeight()));
+			objects.addAll(getController().getPlatforms(getX()+1, getY()-1, getWidth()-2, getHeight()));
+			
+			for (CanvasObject entity : objects) {
 
 				if(entity.intersects(this) && !entity.equals(this)) {
 					

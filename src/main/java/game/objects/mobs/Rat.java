@@ -27,7 +27,6 @@ public class Rat extends GravitableEnemy {
 
 	public Rat(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
 		super(x, y, id, graphicImage, width, height, MOB_HP_INCREMENT, controller);
-		System.out.println(getHealPoints());
 		initGraphics(graphicImage);
 	}
 

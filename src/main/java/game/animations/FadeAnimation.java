@@ -36,8 +36,6 @@ public class FadeAnimation extends Thread{
 	 */
 	@Override
 	public void run() {
-		System.out.println(time);
-		long start= System.currentTimeMillis();
 		double rate = (1/((double)time)) * (0.5);
 		double step = 1/rate;
 		int loop = 0;
@@ -58,9 +56,6 @@ public class FadeAnimation extends Thread{
 			}
 			loop++;
 		}
-		
-		long end= System.currentTimeMillis();
-		System.out.println((double)(end-start)/(double)1000 + "s");
 	}
 
 

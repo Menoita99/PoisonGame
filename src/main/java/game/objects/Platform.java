@@ -27,8 +27,8 @@ public class Platform extends CanvasObject {
 		super(x, y, id, null, width, height, LAYER);
 		this.controller = controller;
 
-		for(Image motion : Cutter.imageCutter(graphicImage, 5)) 	//cuts to obtain motion images
-			images.add(motion);										//images structure [solo,left,mid,right,centre]
+		for(Image img : Cutter.imageCutter(graphicImage, 5)) 	//cuts to obtain motion images
+			images.add(img);										//images structure [solo,left,mid,right,centre]
 	}
 
 
@@ -65,6 +65,9 @@ public class Platform extends CanvasObject {
 	}
 
 
+	
+	
+	
 	/**
 	 * 
 	 * @return true if there is a platform at given orientation 
@@ -72,10 +75,10 @@ public class Platform extends CanvasObject {
 	private boolean isObjectAt(Orientation orientation) {
 		Point2D center = new Point2D(getX()+getWidth()/2,getY()+getHeight()/2);
 		
-		for(CanvasObject co :controller.getObjectsAtLayer(LAYER)) 
-			if(co instanceof Platform)
-				if(co.getBoundary().contains(center.getX()+orientation.getCoord().getX()*getWidth(),
-										     center.getY()+orientation.getCoord().getY()*getHeight()))
+		Point2D objectAt = new Point2D(center.getX()+orientation.getCoord().getX()*getWidth(),
+									   center.getY()+orientation.getCoord().getY()*getHeight());
+		
+			if(!controller.getPlatforms(objectAt).isEmpty())
 					return true;
 		return false;
 	}

@@ -36,6 +36,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -77,6 +78,8 @@ public class GameController implements Controllable, Initializable{
 	private	Map<String, Image> graphics = new HashMap<>();			
 	private	Map<Integer, Canvas> canvas = new HashMap<>();			//layers
 
+	private Map<Point2D,Platform> platforms = new HashMap<>();
+	
 	private AnimationTimer gameLoop;								
 
 	@FXML private StackPane mainPane;								//pane that have the layers(canvas)
@@ -148,15 +151,15 @@ public class GameController implements Controllable, Initializable{
 	 * This is the game loop
 	 */
 	private void update() {
-		for (int layer : canvas.keySet()) {
+		for (int layer : canvas.keySet()) {	//clear canvas
 			Canvas  c = canvas.get(layer);	
-			c.getGraphicsContext2D().clearRect(0, 0, c.getWidth(), c.getHeight());		//clear canvas
+			c.getGraphicsContext2D().clearRect(0, 0, c.getWidth(), c.getHeight());		
 		}
 
-		for (UIObject uiObj : objects) {
-			
-			Rectangle viewPort = camera.getViewPort();
+		Rectangle viewPort = camera.getViewPort();
 
+		for (UIObject uiObj : objects) {	//render other objects
+			
 			if(uiObj instanceof CanvasObject) {
 				CanvasObject sprite = (CanvasObject)uiObj;
 			
@@ -173,7 +176,12 @@ public class GameController implements Controllable, Initializable{
 					uiObj.render(canvas.get(uiObj.getLayer()).getGraphicsContext2D(), viewPort.getLayoutX(),viewPort.getLayoutY());
 			}
 		}
-
+		
+		for(Point2D coord : platforms.keySet()) { //render platforms
+			Platform plat = platforms.get(coord);
+			if(viewPort.getBoundsInParent().intersects(plat.getBoundary()))
+				plat.render(canvas.get(plat.getLayer()).getGraphicsContext2D(), viewPort.getLayoutX(),viewPort.getLayoutY());
+		}
 	}
 
 
@@ -216,6 +224,7 @@ public class GameController implements Controllable, Initializable{
 		currentLevelHeight.set(data.length*xFactor*BLOCKS_SIZE);
 
 		objects.clear();
+		platforms.clear();
 
 		for (int i = 0; i < data.length; i++)  			
 			for (int j = 0; j < data[i].length(); j++)  
@@ -249,7 +258,7 @@ public class GameController implements Controllable, Initializable{
 		case '1':	//platform
 			CanvasObject platform = new Platform(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter, 
 					graphics.get(Platform.getGRAPHIC()), BLOCKS_SIZE,BLOCKS_SIZE,this);
-			objects.add(platform);																		
+			platforms.put(new Point2D(j, i), (Platform) platform);																		
 			return;
 		case '2':	//Monkey enemy
 			CanvasObject monkey = new Monkey(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -314,7 +323,7 @@ public class GameController implements Controllable, Initializable{
 			objects.add(block);	
 			return;
 			
-		//e f g h  (reserved for red lock , red key, green lock , green key)
+		//e f g h  (reserved for red lock , red key, green lock , green key) 
 			
 		case 'i':   //Coin
 			CanvasObject coin= new Coin(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
@@ -506,6 +515,50 @@ public class GameController implements Controllable, Initializable{
 	 */
 	public int getScore() {
 		return score;
+	}
+
+
+
+
+
+
+	/**
+	 * This method returns the platforms that intercepts with the given boundary 
+	 * This only works with w<= BLOCKS_SIZE and h<= BLOCKS_SIZE
+	 */
+	public List<Platform> getPlatforms(double x , double y , double w , double h) {
+		//TODO fix: only works with w<= BLOCKS_SIZE and h<= BLOCKS_SIZE
+		List<Platform> output = new ArrayList<>();
+		
+		Point2D upperLeftPoint = new Point2D((int)(x/BLOCKS_SIZE),(int)(y/BLOCKS_SIZE));
+		Point2D upperRightPoint = new Point2D((int)((x+w)/BLOCKS_SIZE),(int)(y/BLOCKS_SIZE));
+		Point2D bottomLeftPoint = new Point2D((int)(x/BLOCKS_SIZE),(int)((y+h)/BLOCKS_SIZE));
+		Point2D bottomRightPoint = new Point2D((int)((x+w)/BLOCKS_SIZE),(int)((y+h)/BLOCKS_SIZE));
+		
+		if(platforms.containsKey(upperLeftPoint)) output.add(platforms.get(upperLeftPoint));
+		if(platforms.containsKey(upperRightPoint)) output.add(platforms.get(upperRightPoint));
+		if(platforms.containsKey(bottomLeftPoint)) output.add(platforms.get(bottomLeftPoint));
+		if(platforms.containsKey(bottomRightPoint)) output.add(platforms.get(bottomRightPoint));
+		
+		return output;
+	}
+
+
+
+
+
+
+	/**
+	 * This method returns the platforms that intercepts with the given point
+	 */
+	public List<Platform> getPlatforms(Point2D p) {
+		List<Platform> output = new ArrayList<>();
+		
+		Point2D point = new Point2D((int)(p.getX()/BLOCKS_SIZE),(int)(p.getY()/BLOCKS_SIZE));
+
+		if(platforms.containsKey(point)) output.add(platforms.get(point));
+		
+		return output;
 	}
 
 

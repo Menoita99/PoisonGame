@@ -57,7 +57,7 @@ public class Bat extends Enemy {
 			moveRigth();
 		motion();
 		
-		if(inCooldown) {
+		if(!inCooldown) {
 			getController().addEntity(new BatAcidlAttack(getX(), getY()+getHeight()+1, getController()));
 			beginCoolDown();
 		}

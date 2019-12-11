@@ -116,7 +116,7 @@ public class ManagerController extends Application {
 		root.getChildren().add(scenes.get("mainMenuScene"));
 		
 		scene = new Scene(root, WIDTH, HEIGHT);	//set scenes
-		
+		                                                                       
 		window.setTitle("Poison");
 		window.setScene(scene);
 		window.show();						//Displays scene
