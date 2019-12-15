@@ -80,4 +80,11 @@ public class Algorithm {
 	public static int randDropCoinOrItem() {
 		return Math.random() < 0.5 ? 0  : 1 ;
 	}
+	
+	
+	public static double rayleigh(double var) { 
+		assert (var > 0);
+		return Math.sqrt(-2*var*var*(Math.log10(-Math.random()+1)/Math.log10(Math.E)));
+	}
+	
 }
