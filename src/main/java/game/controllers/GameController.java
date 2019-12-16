@@ -322,9 +322,26 @@ public class GameController implements Controllable, Initializable{
 					graphics.get("blue"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
 			staticObjects.put(new Point2D(j,i),block);	
 			return;
-			
-		//e f g h  (reserved for red lock , red key, green lock , green key) 
-			
+		case 'e':   //red key
+			CanvasObject rkey = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("red"+Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			objects.add(rkey);	
+			return;
+		case 'f':   //red lock
+			CanvasObject rlock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("red"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			staticObjects.put(new Point2D(j,i),rlock);	
+			return;
+		case 'g':   //green key
+			CanvasObject gkey = new Key(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("green"+Key.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			objects.add(gkey);	
+			return;
+		case 'h':   //green lock
+			CanvasObject glock = new Lock(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
+					graphics.get("green"+Lock.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, Color.BLUE, this);
+			staticObjects.put(new Point2D(j,i),glock);	
+			return;
 		case 'i':   //Coin
 			CanvasObject coin= new Coin(j*xFactor*BLOCKS_SIZE, i*yFactor*BLOCKS_SIZE, idCounter,
 					graphics.get(Coin.GRAPHIC), BLOCKS_SIZE, BLOCKS_SIZE, this);

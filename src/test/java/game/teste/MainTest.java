@@ -1,12 +1,13 @@
 package game.teste;
 
+import game.algorithms.DataVisualizer;
 
 public class MainTest {
 
 
 
 	public static void main(String[] args) {
-		TextCanvas.main(args);
+		DataVisualizer.main(args);
 	}
 	
 	

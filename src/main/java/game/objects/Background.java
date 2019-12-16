@@ -23,7 +23,7 @@ public class Background extends CanvasObject{
 		getWidthPorperty().bind(camera.getViewPort().widthProperty());		
 		getHeightProperty().bind(camera.getViewPort().heightProperty());
 		this.controller = controller;
-	}
+	} 
 
 
 	

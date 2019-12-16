@@ -189,13 +189,6 @@ public abstract class Enemy extends Movable implements Strikable, Damageable {
 		return images;
 	}
 
-	/**
-	 * @param images the images to set
-	 */
-	public void setImages(List<Image> images) {
-		this.images = images;
-	}
-
 
 
 

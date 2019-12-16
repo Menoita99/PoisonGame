@@ -26,8 +26,14 @@ public class Platform extends CanvasObject {
 	public Platform(double x, double y, int id, Image graphicImage, double width, double height, GameController controller) {
 		super(x, y, id, null, width, height, LAYER);
 		this.controller = controller;
+		
+		Image image = graphicImage;
+		
+		if(getY() >= controller.getHellStartHeight().doubleValue() && controller.getHellStartHeight().doubleValue() != 0)
+			image = controller.getGraphic(GRAPHIC+"Hell");
+		
 
-		for(Image img : Cutter.imageCutter(graphicImage, 5)) 	//cuts to obtain motion images
+		for(Image img : Cutter.imageCutter(image, 5)) 	//cuts to obtain motion images
 			images.add(img);										//images structure [solo,left,mid,right,centre]
 	}
 

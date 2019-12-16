@@ -26,12 +26,7 @@ public class Algorithm {
 		else return Rarity.LEGENDARY;
 	}
 
-	// 70% Normal out-1 // 30% Strong out-2 //
-	public static int randMobClass () {
-		double u = Math.random();
-		if (u <= 0.7) return 1;
-		else return 2;
-	}
+
 
 	// mob attack timer
 	public static double triangle () { 
@@ -74,7 +69,7 @@ public class Algorithm {
 
 
 	/**
-	 * 
+	 *  
 	 * @return return or 0 or 1 with 50% probability
 	 */
 	public static int randDropCoinOrItem() {
